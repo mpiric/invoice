@@ -1,0 +1,114 @@
+<!-- start: DASHBOARD TITLE -->
+<section id="page-title" class="padding-top-15 padding-bottom-15">
+	<div class="row">
+		<div class="col-sm-7">
+			<!-- <h1 class="mainTitle" translate="dashboard.WELCOME" translate-values="{ appName: app.name }">{{ mainTitle }}</h1> -->
+			<h1 >WELCOME TO DASHBOARD</h1>
+		</div>
+		<div class="col-sm-5" >
+		
+		</div>
+	</div>
+</section>
+<!-- end: DASHBOARD TITLE -->
+<!-- start: FEATURED BOX LINKS -->
+
+<div class="container-fluid container-fullw bg-white">
+	<div class="row">
+		<div class="col-sm-4">
+			<div class="panel panel-white no-radius text-center">
+				<div class="panel-body">
+					<span class="fa-stack fa-2x"> <i class="fa fa-square fa-stack-2x text-primary"></i> <i class="fa fa-home fa-stack-1x fa-inverse"></i> </span>
+					<h2 class="StepTitle">Manage Branches</h2>
+					<p class="text-small">
+						To add a branch, you need to be signed in as the super user.
+					</p>
+					<p class="links cl-effect-1">
+						<a href = "#/app/branch/create">
+							view more
+						</a>
+					</p>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-4">
+			<div class="panel panel-white no-radius text-center">
+				<div class="panel-body">
+					<span class="fa-stack fa-2x"> <i class="fa fa-square fa-stack-2x text-primary"></i> <i class="fa fa-pencil-square-o fa-stack-1x fa-inverse"></i> </span>
+					<h2 class="StepTitle">Manage Orders</h2>
+					<p class="text-small">
+						The Manage Orders tool provides a view of all your orders.
+					</p>
+					<p class="cl-effect-1">
+						<a href="#/app/order/create">
+							view more
+						</a>
+					</p>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-4">
+			<div class="panel panel-white no-radius text-center">
+				<div class="panel-body">
+					<span class="fa-stack fa-2x"> <i class="fa fa-square fa-stack-2x text-primary"></i> <i class="fa fa-briefcase	 fa-stack-1x fa-inverse"></i> </span>
+					<h2 class="StepTitle">Manage Tax</h2>
+					<p class="text-small">
+						View and modify previously provided details.
+					</p>
+					<p class="links cl-effect-1">
+						<a href="#/app/tax/create">
+							view more
+						</a>
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- end: FEATURED BOX LINKS -->
+
+<!-- start: SECOND SECTION -->
+<div class="container-fluid container-fullw bg-white" ng-controller="dashboardAdminCtrl">
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="panel panel-white no-radius">
+				<div class="panel-body">
+					<div class="partition-light-grey padding-15 text-center margin-bottom-20">
+						<h4 class="no-margin">Branch Statistics</h4>
+						
+					</div>
+					
+						<div>
+							<!-- <table class="table margin-bottom-0" ng-load="viewDashboard(branch_id)"> -->
+							<table class="table margin-bottom-0">
+								<thead>
+								    <tr>
+								        <th class="hidden-xs">Branch</th>
+								        <th class="hidden-xs">City</th>
+								        <th class="hidden-xs">Income</th>
+								    </tr>
+								</thead>
+								<tbody>
+
+									<tr ng-repeat="row in incomelist">
+										<td>{{row.name}}</td>
+										<td>{{row.city}}</td>
+										<td>{{row.daily_income}}</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+			
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+		<!-- <div class="col-sm-4">
+			
+		</div> -->
+<!--	</div>
+</div>
+ end: SECOND SECTION -->

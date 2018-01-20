@@ -1,0 +1,52 @@
+<!-- start: PAGE TITLE -->
+<section id="page-title">
+	<div class="row">
+		<div class="col-sm-8">
+		<h1 class ="mainTitle">Waiter Sales Report</h1>
+			<!-- <h1 class="mainTitle" translate="sidebar.nav.forms.ELEMENTS">Waiter Sales Report</h1> -->
+		</div>
+		
+	</div>
+</section>
+<!-- end: PAGE TITLE -->
+
+<!-- start: DATE/TIME Picker -->
+<div class="container-fluid container-fullw">
+	<div class="row">
+		<div class="col-md-12">
+			
+			<div class="panel panel-white no-radius">
+				<div class="panel-body">
+					<!-- /// controller:  'DatepickerDemoCtrl' -  localtion: assets/js/controllers/bootstrapCtrl.js /// -->
+					<div ng-controller="DatepickerDemoCtrl">
+					<form action="javascript:void(0)" method="post">
+						
+						<div class="row">
+							
+							<div class="col-md-6">
+								<h5 class="text-bold margin-top-25 margin-bottom-15">Date Range</h5>
+								<div class="input-group">
+
+									<input type="text" class="form-control" datepicker-popup="dd/MM/yyyy" ng-model="start"  is-open="startOpened" ng-init="startOpened = false" min-date="'1970-12-31'" max-date="end" ng-required="true" close-text="Close"  ng-click="startOpen($event)"/>
+									<span class="input-group-addon">to</span>
+									<input type="text" class="form-control" datepicker-popup="dd/MM/yyyy" ng-model="end" is-open="endOpened" ng-init="endOpened = false" min-date="start" ng-required="true" close-text="Close"  ng-click="endOpen($event)" />
+								</div>
+								<h5 class="text-bold margin-top-25 margin-bottom-15"> Select Waiter:</h5>
+								<!-- <select class="form-control" ng-model="format" ng-options="f for f in formats">
+									<option></option>
+								</select> -->
+								<div ng-controller="" ng-show="show_branch_dd" class="form-group col-md-6">
+						        <label for="branch_id"  class="control-label">Branch: <span class="symbol required"></span></label>
+						          <select class="form-control" name="waiter_id" ng-options="item as item.name for item in branch_list track by item.branch_id" ng-model="branch_id" ng-change="branchwiseProduct(branch_id)">
+						          </select>
+						      </div>
+							</div>
+						</div>
+					</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- end: DATE/TIME Picker -->

@@ -1,0 +1,543 @@
+<!--start: SEARCH FORM -->
+<!-- <div class="search-form">
+	<a class="s-open" href="#">
+		<i class="ti-search"></i>
+	</a>
+	<form class="navbar-form" role="search">
+		<a class="s-remove" href="#" ng-toggle-class="search-open" target=".navbar-form">
+			<i class="ti-close"></i>
+		</a>
+		<div class="form-group">
+			<input type="text" class="form-control" placeholder="{{ 'sidebar.search.PLACEHOLDER' | translate }}">
+			<button class="btn search-button" type="submit">
+				<i class="ti-search"></i>
+			</button>
+		</div>
+	</form>
+</div> -->
+<!-- end: SEARCH FORM -->
+<!-- start: MAIN NAVIGATION MENU -->
+<!-- <div class="navbar-title">
+	<span translate="sidebar.heading.NAVIGATION">Main Navigation</span>
+</div> -->
+
+
+<ul class="main-navigation-menu" ng-controller="navCtrl">
+    <!-- <li ui-sref-active="active">
+		<a ui-sref="app.branch">
+			<div class="item-content">
+				<div class="item-media">
+					<i class="ti-home"></i>
+				</div>
+				<div class="item-inner">
+					<span class="title" translate="sidebar.nav.branch.MAIN"> Branch </span>
+				</div>
+			</div>
+		</a>
+	</li> -->
+    <li ui-sref-active="active" ng-show="!show_dashboard_li">
+        <!--<a ui-sref="app.dashboard_new">-->
+        <a ui-sref="app.dashboard_new">
+            <div class="item-content">
+                <div class="item-media">
+                    <i class=" ti-layout-media-overlay-alt"></i>
+                </div>
+                <div class="item-inner">
+                    <span class="title"> Dashboard </span>
+                </div>
+            </div>
+        </a>
+    </li>
+    <li ui-sref-active="active" ng-show="show_dashboard_li">
+        <a ui-sref="app.dashboardAdmin">
+            <div class="item-content">
+                <div class="item-media">
+                    <i class=" ti-layout-media-overlay-alt"></i>
+                </div>
+                <div class="item-inner">
+                    <span class="title"> Dashboard </span>
+                </div>
+            </div>
+        </a>
+    </li>
+
+    <li ng-class="{'active open':$state.includes('app.branch')}" ng-show="show_dashboard_li">
+        <a href="javascript:void(0)">
+            <div class="item-content">
+                <div class="item-media">
+                    <i class="ti-home"></i>
+                </div>
+                <div class="item-inner">
+                    <span class="title" translate="sidebar.nav.branch.MAIN"> Branch </span><i class="icon-arrow"></i>
+                </div>
+            </div>
+        </a>
+        <ul class="sub-menu">
+            <li ui-sref-active="active">
+                <a ui-sref="app.branch.create">
+                    <span class="title" translate="sidebar.nav.branch.CREATE">Create</span>
+                </a>
+            </li>
+            <li ui-sref-active="active">
+                <a ui-sref="app.branch.list">
+                    <span class="title" translate="sidebar.nav.branch.LIST">List</span>
+                </a>
+            </li>
+        </ul>
+    </li>
+
+    
+
+    <li ng-class="{'active open':$state.includes('app.waiter')}" ng-show="show_dashboard_li">
+        <a href="javascript:void(0)">
+            <div class="item-content">
+                <div class="item-media">
+                    <i class="ti-user"></i>
+                </div>
+                <div class="item-inner">
+                    <span class="title"> Waiter </span><i class="icon-arrow"></i>
+                </div>
+            </div>
+        </a>
+        <ul class="sub-menu">
+            <li ui-sref-active="active">
+                <a ui-sref="app.waiter.create">
+                    <span class="title">Create</span>
+                </a>
+            </li>
+            <li ui-sref-active="active">
+                <a ui-sref="app.waiter.list">
+                    <span class="title">List</span>
+                </a>
+            </li>
+        </ul>
+    </li>
+
+    <li ng-class="{'active open':$state.includes('app.product')}" ng-show="show_dashboard_li">
+        <a href="javascript:void(0)">
+            <div class="item-content">
+                <div class="item-media">
+                    <i class="ti-package"></i>
+                </div>
+                <div class="item-inner">
+                    <span class="title"> Product </span><i class="icon-arrow"></i>
+                </div>
+            </div>
+        </a>
+        <ul class="sub-menu">
+            <li ui-sref-active="active">
+                <a ui-sref="app.product.create">
+                    <span class="title">Create</span>
+                </a>
+            </li>
+            <li ui-sref-active="active">
+                <a ui-sref="app.product.list">
+                    <span class="title">List</span>
+                </a>
+            </li>
+        </ul>
+    </li>
+
+    <li ng-class="{'active open':$state.includes('app.tax')}" ng-show="show_dashboard_li">
+        <a href="javascript:void(0)">
+            <div class="item-content">
+                <div class="item-media">
+                    <i class="ti-layout-grid2"></i>
+                </div>
+                <div class="item-inner">
+                    <span class="title"> Tax </span><i class="icon-arrow"></i>
+                </div>
+            </div>
+        </a>
+        <ul class="sub-menu">
+            <li ui-sref-active="active">
+                <a ui-sref="app.tax.create">
+                    <span class="title">Create</span>
+                </a>
+            </li>
+            <li ui-sref-active="active">
+                <a ui-sref="app.tax.list">
+                    <span class="title">List</span>
+                </a>
+            </li>
+        </ul>
+    </li>
+
+    <li ng-class="{'active open':$state.includes('app.taxmain')}" ng-show="show_dashboard_li">
+        <a href="javascript:void(0)">
+            <div class="item-content">
+                <div class="item-media">
+                    <i class="ti-layout-grid2"></i>
+                </div>
+                <div class="item-inner">
+                    <span class="title"> Tax Main </span><i class="icon-arrow"></i>
+                </div>
+            </div>
+        </a>
+        <ul class="sub-menu">
+            <li ui-sref-active="active">
+                <a ui-sref="app.taxmain.create">
+                    <span class="title">Create</span>
+                </a>
+            </li>
+            <li ui-sref-active="active">
+                <a ui-sref="app.taxmain.list">
+                    <span class="title">List</span>
+                </a>
+            </li>
+        </ul>
+    </li>
+
+    <li ng-class="{'active open':$state.includes('app.productcategory')}" ng-show="show_dashboard_li">
+        <a href="javascript:void(0)">
+            <div class="item-content">
+                <div class="item-media">
+                    <i class="ti-layers-alt"></i>
+                </div>
+                <div class="item-inner">
+                    <span class="title"> Product Category </span><i class="icon-arrow"></i>
+                </div>
+            </div>
+        </a>
+        <ul class="sub-menu">
+            <li ui-sref-active="active">
+                <a ui-sref="app.productcategory.create">
+                    <span class="title">Create</span>
+                </a>
+            </li>
+            <li ui-sref-active="active">
+                <a ui-sref="app.productcategory.list">
+                    <span class="title">List</span>
+                </a>
+            </li>
+        </ul>
+    </li>
+
+    <li ng-class="{'active open':$state.includes('app.order')}">
+        <a href="javascript:void(0)">
+            <div class="item-content">
+                <div class="item-media">
+                    <i class="ti-pencil-alt"></i>
+                </div>
+                <div class="item-inner">
+                    <span class="title"> Orders </span><i class="icon-arrow"></i>
+                </div>
+            </div>
+        </a>
+        <ul class="sub-menu">
+            <li ui-sref-active="active">
+                <a ui-sref="app.order.create">
+                    <span class="title">Create Order</span>
+                </a>
+            </li>
+            <li ui-sref-active="active">
+                <a ui-sref="app.order.list">
+                    <span class="title">Order List</span>
+                </a>
+            </li>
+        </ul>
+    </li>
+
+    <!-- 	<li ng-class="{'active open':$state.includes('app.waitercommission')}" ng-show="show_dashboard_li">
+		<a href="javascript:void(0)">
+			<div class="item-content">
+				<div class="item-media">
+					<i class="ti-layout-grid2"></i>
+				</div>
+				<div class="item-inner">
+					<span class="title"> Waiter Commission </span><i class="icon-arrow"></i>
+				</div>
+			</div>
+		</a>
+		<ul class="sub-menu">
+			<li ui-sref-active="active">
+				<a ui-sref="app.waitercommission.create">
+					<span class="title">Create</span>
+				</a>
+			</li>
+			<li ui-sref-active="active">
+				<a ui-sref="app.waitercommission.list">
+					<span class="title">List</span>
+				</a>
+			</li>
+		</ul>
+	</li> -->
+    <li ng-class="{'active open':$state.includes('app.brand')}" ng-show="show_dashboard_li">
+        <a href="javascript:void(0)">
+            <div class="item-content">
+                <div class="item-media">
+                    <i class="ti-layout-grid2"></i>
+                </div>
+                <div class="item-inner">
+                    <span class="title"> Brand </span><i class="icon-arrow"></i>
+                </div>
+            </div>
+        </a>
+        <ul class="sub-menu">
+            <li ui-sref-active="active">
+                <a ui-sref="app.brand.create">
+                    <span class="title">Create</span>
+                </a>
+            </li>
+            <li ui-sref-active="active">
+                <a ui-sref="app.brand.list">
+                    <span class="title">List</span>
+                </a>
+            </li>
+        </ul>
+    </li>
+
+    <li ng-class="{'active open':$state.includes('app.branchproducts')}" ng-show="show_dashboard_li">
+        <a href="javascript:void(0)">
+            <div class="item-content">
+                <div class="item-media">
+                    <i class="ti-menu-alt"></i>
+                </div>
+                <div class="item-inner">
+                    <span class="title"> Branch Products </span><i class="icon-arrow"></i>
+                </div>
+            </div>
+        </a>
+        <ul class="sub-menu">
+            <li ui-sref-active="active">
+                <a ui-sref="app.branchproducts.create">
+                    <span class="title">Manage Branch Products</span>
+                </a>
+            </li>
+
+        </ul>
+    </li>
+
+    <li ng-class="{'active open':$state.includes('app.branchproducts')}" ng-show="show_dashboard_li">
+        <a href="javascript:void(0)">
+            <div class="item-content">
+                <div class="item-media">
+                    <i class="ti-receipt"></i>
+                </div>
+                <div class="item-inner">
+                    <span class="title"> Product Recipe </span><i class="icon-arrow"></i>
+                </div>
+            </div>
+        </a>
+        <ul class="sub-menu">
+            <li ui-sref-active="active">
+                <a ui-sref="app.productrecipe.create">
+                    <span class="title">Manage Product Recipe</span>
+                </a>
+            </li>
+
+        </ul>
+    </li>
+
+
+    <li ng-class="{'active open':$state.includes('app.customer')}" ng-show="show_dashboard_li">
+        <a href="javascript:void(0)">
+            <div class="item-content">
+                <div class="item-media">
+                    <i class="ti-user"></i>
+                </div>
+                <div class="item-inner">
+                    <span class="title"> Customer </span><i class="icon-arrow"></i>
+                </div>
+            </div>
+        </a>
+
+        <ul class="sub-menu">
+            <li ui-sref-active="active">
+                <a ui-sref="app.customer.create">
+                    <span class="title">Create</span>
+                </a>
+            </li>
+            <li ui-sref-active="active">
+                <a ui-sref="app.customer.list">
+                    <span class="title">List</span>
+                </a>
+            </li>
+        </ul>
+
+    </li>
+
+     <li ng-class="{'active open':$state.includes('app.category')}" ng-show="show_dashboard_li">
+        <a href="javascript:void(0)">
+            <div class="item-content">
+                <div class="item-media">
+                    <i class="ti-layout-menu-v"></i>
+                </div>
+                <div class="item-inner">
+                    <span class="title"> Store Category </span><i class="icon-arrow"></i>
+                </div>
+            </div>
+        </a>
+
+        <ul class="sub-menu">
+            <li ui-sref-active="active">
+                <a ui-sref="app.category.create">
+                    <span class="title">Create</span>
+                </a>
+            </li>
+            <li ui-sref-active="active">
+                <a ui-sref="app.category.list">
+                    <span class="title">List</span>
+                </a>
+            </li>
+        </ul>
+
+    </li>
+
+
+    <li ng-class="{'active open':$state.includes('app.report')}">
+        <a href="javascript:void(0)">
+            <div class="item-content">
+                <div class="item-media">
+                    <i class="ti-agenda"></i>
+                </div>
+                <div class="item-inner">
+                    <span class="title"> Reports </span><i class="icon-arrow"></i>
+                </div>
+            </div>
+        </a>
+
+        <ul class="sub-menu">
+            <li ui-sref-active="active">
+                <a ui-sref="app.report.waiter_rpt">
+                    <span class="title">Waiter</span>
+                </a>
+            </li>
+            <li ui-sref-active="active">
+                <a ui-sref="app.report.sales">
+                    <span class="title">Sales</span>
+                </a>
+            </li>
+            <li ui-sref-active="active">
+                <a ui-sref="app.report.dailysales">
+                    <span class="title">Daily Sales</span>
+                </a>
+            </li>
+            <!-- <li ui-sref-active="active">
+                <a ui-sref="app.report.brandwisedailysales">
+                    <span class="title">Brand Wise Daily Sales</span>
+                </a>
+            </li> -->
+            <li ui-sref-active="active" ng-show="show_dashboard_li">
+                <a ui-sref="app.report.branch">
+                    <span class="title">Branch</span>
+                </a>
+            </li>
+            <li ui-sref-active="active">
+                <a ui-sref="app.report.item_wise_sales">
+                    <span class="title">Item Wise Sales</span>
+                </a>
+            </li>
+            <li ui-sref-active="active">
+                <a ui-sref="app.report.store_item_report">
+                    <span class="title">Store Items</span>
+                </a>
+            </li>
+            <li ui-sref-active="active">
+                <a ui-sref="app.report.daily_purchase">
+                    <span class="title">Daily Purchase</span>
+                </a>
+            </li>
+            <li ui-sref-active="active">
+                <a ui-sref="app.report.product_recipe">
+                    <span class="title">Product Recipe</span>
+                </a>
+            </li>
+        </ul>
+
+    </li>
+    <li ng-class="{'active open':$state.includes('app.storeproduct')}">
+        <a href="javascript:void(0)">
+            <div class="item-content">
+                <div class="item-media">
+                    <i class="ti-bag"></i>
+                </div>
+                <div class="item-inner">
+                    <span class="title"> Store Product </span><i class="icon-arrow"></i>
+                </div>
+            </div>
+        </a>
+
+        <ul class="sub-menu">
+            <li ui-sref-active="active" ng-show="show_dashboard_li">
+                <a ui-sref="app.storeproduct.create">
+                    <span class="title">Create</span>
+                </a>
+            </li>
+            <li ui-sref-active="active">
+                <a ui-sref="app.storeproduct.list">
+                    <span class="title">List</span>
+                </a>
+            </li>
+        </ul>
+
+    </li>
+    <li ng-class="{'active open':$state.includes('app.storeinward')}">
+        <a href="javascript:void(0)">
+            <div class="item-content">
+                <div class="item-media">
+                    <i class="ti-money"></i>
+                </div>
+                <div class="item-inner">
+                    <span class="title"> Store Inward </span><i class="icon-arrow"></i>
+                </div>
+            </div>
+        </a>
+
+        <ul class="sub-menu">
+            <li ui-sref-active="active">
+                <a ui-sref="app.storeinward.create">
+                    <span class="title">Manage Store Inward</span>
+                </a>
+            </li>
+
+        </ul>
+
+    </li>
+
+    <li ng-class="{'active open':$state.includes('app.kitcheninward')}">
+        <a href="javascript:void(0)">
+            <div class="item-content">
+                <div class="item-media">
+                    <i class="ti-money"></i>
+                </div>
+                <div class="item-inner">
+                    <span class="title"> Kitchen Inward </span><i class="icon-arrow"></i>
+                </div>
+            </div>
+        </a>
+
+        <ul class="sub-menu">
+            <li ui-sref-active="active">
+                <a ui-sref="app.kitcheninward.create">
+                    <span class="title">Manage Kitchen Inward</span>
+                </a>
+            </li>
+
+        </ul>
+
+    </li>
+    <li >
+        <!--<a ui-sref="app.dashboard_new">-->
+        <a href="http://support.mpiric.us" target="_blank">
+            <div class="item-content">
+                <div class="item-media">
+                    <i class=" ti-layout-media-overlay-alt"></i>
+                </div>
+                <div class="item-inner">
+                    <span class="title"> Support </span>
+                </div>
+            </div>
+        </a>
+    </li>
+
+</ul>
+
+
+<!-- end: MAIN NAVIGATION MENU -->
+<!-- start: CORE FEATURES -->
+
+<!-- end: CORE FEATURES -->
+<!-- start: DOCUMENTATION BUTTON -->
+
+<!-- end: DOCUMENTATION BUTTON 

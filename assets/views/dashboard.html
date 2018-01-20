@@ -1,0 +1,97 @@
+<!-- start: DASHBOARD TITLE -->
+<section id="page-title" class="padding-top-15 padding-bottom-15">
+    <div class="row">
+        <div class="col-sm-7">
+            <!-- <h1 class="mainTitle" translate="dashboard.WELCOME" translate-values="{ appName: app.name }">{{ mainTitle }}</h1> -->
+            <h1>WELCOME TO DASHBOARD</h1>
+        </div>
+        <div class="col-sm-5">
+            <!-- start: MINI STATS WITH SPARKLINE -->
+            <!-- /// controller:  'SparklineCtrl' -  localtion: assets/js/controllers/dashboardCtrl.js /// -->
+
+            <!-- end: MINI STATS WITH SPARKLINE -->
+        </div>
+    </div>
+</section>
+<!-- end: DASHBOARD TITLE -->
+
+
+<!-- start: SECOND SECTION -->
+
+<div class="container-fluid container-fullw bg-white" ng-controller="dashboardCtrl">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="panel panel-white no-radius">
+                <div class="panel-body">
+                    <div class="partition-light-grey padding-15 text-center margin-bottom-20">
+                        <h4 class="no-margin">Waiter Details</h4>
+                        <!-- <span class="text-light">based on the major browsers</span> -->
+                    </div>
+
+                    <div>
+                        <table class="table margin-bottom-0">
+                            <!--  ng-load="viewDashboard(branch_id)"> -->
+                            <thead>
+                                <tr>
+                                    <th class="hidden-xs">Name</th>
+                                    <th class="hidden-xs">Code</th>
+                                    <th class="hidden-xs">City</th>
+                                    <th class="hidden-xs">Contact</th>
+                                    <!-- <th class="hidden-xs">Income</th> -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="row in waiterlist">
+                                    <td>{{row.firstname}}</td>
+                                    <td>{{row.waiter_code}}</td>
+                                    <td>{{row.location_id}}</td>
+                                    <td>{{row.contact}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="panel panel-white no-radius">
+                <div class="panel-body">
+                    <div class="partition-light-grey padding-15 text-center margin-bottom-20">
+                        <h4 class="no-margin">Income Details</h4>
+                        <!-- <span class="text-light">based on the major browsers</span> -->
+                    </div>
+
+                    <div>
+                        <table class="table margin-bottom-0">
+                            <!--  ng-load="viewDashboard(branch_id)"> -->
+                            <thead>
+                                <tr>
+                                    <th class="hidden-xs">Daily</th>
+                                    <th class="hidden-xs">Monthly</th>
+
+                                    <!-- <th class="hidden-xs">Income</th> -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+
+                                    <td>{{daily_income}}</td>
+                                    <td>{{monthly_income}}</td>
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--	</div>
+</div>
+ end: SECOND SECTION -->
