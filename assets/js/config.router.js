@@ -735,12 +735,11 @@ app.config(['$stateProvider', '$urlRouterProvider', '$controllerProvider', '$com
                         request.success(function(data) {
 
                             //alert(data.status);
-                            console.log(data);
+                            //console.log(data);
 
                             if (data.status != "1") {
                                 //error
                                 alert(data.message);
-                                //alert("asdasdasd");
                             } else {
                                 // success;
                                 //console.log(data.data.message.branch_type);

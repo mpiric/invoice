@@ -30,9 +30,7 @@ app.controller('dashboardAdminCtrl',["$scope","$http","$state", function ($scope
                                 }
                                 else
                                 {
-                                    //alert("jigar");
                                     alert(response.data);                                
-                                    //alert("test");
                                 }
                             });
 
