@@ -1404,10 +1404,10 @@ app.controller('orderCtrl', ["$scope", "$http", "$state", "$modal", "$window", "
 
         // get table_bill_id
         // console.log(table_detail);
-         console.log('table_detail');
-         console.log(table_detail);
-         console.log(table_id);
-         console.log(table_number);
+         // console.log('table_detail');
+         // console.log(table_detail);
+         // console.log(table_id);
+         // console.log(table_number);
 
 
         $scope.saveBtnDisabled = false;
@@ -1680,69 +1680,73 @@ app.controller('orderCtrl', ["$scope", "$http", "$state", "$modal", "$window", "
                         }
                     });
                     request.success(function(response) {
+                        if(response.status == 1){
+                            // get inserted order_id
 
-                        // get inserted order_id
-
-                        $scope.order_id = response.order_id;
-
-
-                        // order items
-                        var request = $http({
-                            method: "post",
-                            url: "index.php/order/add_order_items",
-                            data: 'order_id=' + $scope.order_id + '&products=' + JSON.stringify(selected_products),
-                            headers: {
-                                'Content-Type': 'application/x-www-form-urlencoded'
-                            }
-                        });
-
-                        request.success(function(response) {
-                            // console.log(response);
-
-                            $scope.selected_table_id = angular.element('#table_id').val();
-                            $scope.selected_table_number = angular.element('#table_number').val();
+                            $scope.order_id = response.order_id;
 
 
-                            angular.forEach($scope.data, function(value, key) {
-
-                                // console.log(value);
-
-                                if ($scope.selected_table_id == value.table_detail_id) {
-                                    value.order_id = $scope.order_id;
-                                    value.order_code = $scope.order_code;
-                                    //value.total_amount = $scope.finalTotal();
-                                    value.total_amount = $scope.finalOrderTotal();
+                            // order items
+                            var request = $http({
+                                method: "post",
+                                url: "index.php/order/add_order_items",
+                                data: 'order_id=' + $scope.order_id + '&products=' + JSON.stringify(selected_products),
+                                headers: {
+                                    'Content-Type': 'application/x-www-form-urlencoded'
                                 }
-                                $scope.is_bill_saved = true;
                             });
 
-                        });
+                            request.success(function(response) {
+                                // console.log(response);
 
-                        setTimeout(function() {
-                            $('#table_row_' + angular.element('#table_number').val()).click();
-                        }, 400);
-
-                        // order tax
-
-                        //console.log($scope.tax_arr);
-
-                        var request = $http({
-                            method: "post",
-                            url: "index.php/order/add_order_tax",
-                            data: 'order_id=' + $scope.order_id + '&tax_arr=' + JSON.stringify($scope.tax_arr),
-                            headers: {
-                                'Content-Type': 'application/x-www-form-urlencoded'
-                            }
-                        });
-
-                        request.success(function(response) {
-                            //console.log(response);
-
-                        });
+                                $scope.selected_table_id = angular.element('#table_id').val();
+                                $scope.selected_table_number = angular.element('#table_number').val();
 
 
-                        // $rootScope.$emit("CallParcelGetNextBill");
-                        // $rootScope.$emit("CallDeliveryGetNextBill");
+                                angular.forEach($scope.data, function(value, key) {
+
+                                    // console.log(value);
+
+                                    if ($scope.selected_table_id == value.table_detail_id) {
+                                        value.order_id = $scope.order_id;
+                                        value.order_code = $scope.order_code;
+                                        //value.total_amount = $scope.finalTotal();
+                                        value.total_amount = $scope.finalOrderTotal();
+                                    }
+                                    $scope.is_bill_saved = true;
+                                });
+
+                            });
+
+                            setTimeout(function() {
+                                $('#table_row_' + angular.element('#table_number').val()).click();
+                            }, 400);
+
+                            // order tax
+
+                            //console.log($scope.tax_arr);
+
+                            var request = $http({
+                                method: "post",
+                                url: "index.php/order/add_order_tax",
+                                data: 'order_id=' + $scope.order_id + '&tax_arr=' + JSON.stringify($scope.tax_arr),
+                                headers: {
+                                    'Content-Type': 'application/x-www-form-urlencoded'
+                                }
+                            });
+
+                            request.success(function(response) {
+                                //console.log(response);
+
+                            });
+
+
+                            // $rootScope.$emit("CallParcelGetNextBill");
+                            // $rootScope.$emit("CallDeliveryGetNextBill");
+                        } else {
+                            alert("Error: Item is not inserted. Please try again.");
+                        }
+                        
                     });
                     //focus back on product list
                     var result = document.getElementById("product_list");
@@ -2796,14 +2800,14 @@ app.controller('orderCtrl', ["$scope", "$http", "$state", "$modal", "$window", "
 
                         $scope.branch_contact = response.branch_details.contact;
                         if($scope.branch_contact != '' && $scope.branch_contact != null){
-                            branch_contact = '<br> CONTACT : ' + $scope.branch_contact;
+                            branch_contact = '<br> CONTACT: ' + $scope.branch_contact;
                         }
                         if ($scope.service_tax_number != '' && $scope.service_tax_number != null) {
-                            service_tax_number_html = 'Service Code – 996331 <br>  CIN No : ' + $scope.service_tax_number;
+                            service_tax_number_html = 'Service Code – 996331 <br>  CIN No: ' + $scope.service_tax_number;
                         } 
                         $scope.other_number = response.branch_details.other_number;
                         if ($scope.other_number != '' && $scope.other_number != null) {
-                            other_number_html = 'GSTIN : ' + $scope.other_number;
+                            other_number_html = 'GSTIN: ' + $scope.other_number;
                         }
                     }
 
@@ -2860,7 +2864,7 @@ app.controller('orderCtrl', ["$scope", "$http", "$state", "$modal", "$window", "
                             var popupWin = window.open('', '_blank', 'width=300,height=600');
                             popupWin.document.open();
 
-                            popupWin.document.write('<style type="text/css"> table.tableizer-table { font-size: 12px; font-family: Verdana, Geneva, Arial, sans-serif; text-transform: uppercase;width:255px; } table.inner-table{border-collapse:collapse;} .tableizer-table td { padding: 2px 0px; margin: 0px; vertical-align: initial; }.bottom-border {border-width:1px;border-bottom : 1px dashed #000 !important;}.top-border {border-width:1px;border-top : 1px dashed #000 !important;} .border { border-width:1px;border-top : 1px dashed #000 !important;border-bottom : 1px dashed #000 !important; }.center{text-align:center;} .title {font-size : 16px;}</style><table class="tableizer-table"> <thead> <tr class="tableizer-firstrow"> <th colspan="5" class="center title">' + branch_name + '</th> </tr> </thead> <tbody> <tr> <td colspan="5" class="center">' + branch_address +'<br>'+ city_name + ' - ' + pincode + branch_contact + '</td> </tr> <tr> <td class="bottom-border center" colspan="5" > RETAIL INVOICE</td> </tr> <tr> <td class="center" colspan="5">' + order_date +' '+ order_time+ '</td> </tr> <tr> <td colspan="5" style="padding:0px;"> <table class="tableizer-table inner-table" style="width:100%"> <tr> <td>BILL : ' + $scope.printOrderCode + '</td> <td align="right">TABLE : ' + table_number + '</td> </tr> <tr> <td>CAPTAIN : ' + captain + '</td> <td align="right">COVERS : ' + covers + '</td> </tr> </table> </td> </tr><tr><td colspan="5" style="padding:0px;"> <table class="tableizer-table inner-table" style="width:100%"><tr><td class="border"><b>ITEM NAME</b></td><td class="border" align="right"><b>QTY</b></td><td class="border" align="right"><b>RATE</b></td><td class="border" align="right" style="padding-left:4px;"><b>AMT</b></td></tr> ' + invoice_items + '</table></td></tr> <tr> <td colspan="4" class="top-border">TOTAL QTY</td> <td class="top-border" align="right">' + total_order_items + '</td> </tr> <tr> <td colspan="4"><b>SUB TOTAL</b></td> <td align="right"><b>' + (invoice_total).toFixed(2) + '</b></td> </tr> <tr> <td colspan="4">DISCOUNT @ ' + dicount_percent + '%</td> <td align="right">' + ((invoice_total * dicount_percent) / 100).toFixed(2) + '</td> </tr> ' + branch_specific_taxes + ' <tr> <td colspan="4">TOTAL</td> <td style="height:auto;" align="right">' + (grand_total).toFixed(2) + '</td> </tr> <tr> <td colspan="4">ROUND OFF</td> <td style="height:auto;" align="right">' + (Math.round(grand_total) - (grand_total)).toFixed(2) + '</td> </tr> <tr> <td colspan="4" class="border title"><b>GRAND TOTAL</b></td> <td class="border title" style="height:auto;" align="right"><b>' + (Math.round(grand_total)).toFixed(2) + '</b></td> </tr> <tr> <td>&nbsp;</td> </tr>' + note +'<tr> <td colspan="5" align="center">' + service_tax_number_html + ' <br>' + other_number_html + ' <br>NO REVERSE CHARGE</td> </tr> <tr></tr> <tr> <td colspan="5" align="center">**** THANK YOU ! VISIT AGAIN ****</td> </tr><tr> <td>&nbsp;</td> </tr> </tbody></table>');
+                            popupWin.document.write('<style type="text/css"> table.tableizer-table { font-size: 12px; font-family: Verdana, Geneva, Arial, sans-serif; text-transform: uppercase;width:255px; } table.inner-table{border-collapse:collapse;} .tableizer-table td { padding: 2px 0px; margin: 0px; vertical-align: initial; }.bottom-border {border-width:1px;border-bottom : 1px dashed #000 !important;}.top-border {border-width:1px;border-top : 1px dashed #000 !important;} .border { border-width:1px;border-top : 1px dashed #000 !important;border-bottom : 1px dashed #000 !important; }.center{text-align:center;} .title {font-size : 16px;}</style><table class="tableizer-table"> <thead> <tr class="tableizer-firstrow"> <th colspan="5" class="center title">' + branch_name + '</th> </tr> </thead> <tbody> <tr> <td colspan="5" class="center">' + branch_address +'<br>'+ city_name + ' - ' + pincode + branch_contact + '</td> </tr> <tr> <td class="bottom-border center" colspan="5" > RETAIL INVOICE</td> </tr> <tr> <td class="center" colspan="5">' + order_date +' '+ order_time+ '</td> </tr> <tr> <td colspan="5" style="padding:0px;"> <table class="tableizer-table inner-table" style="width:100%"> <tr> <td>BILL: ' + $scope.printOrderCode + '</td> <td align="right">TABLE: ' + table_number + '</td> </tr> <tr> <td>CAPTAIN: ' + captain + '</td> <td align="right">COVERS: ' + covers + '</td> </tr> </table> </td> </tr><tr><td colspan="5" style="padding:0px;"> <table class="tableizer-table inner-table" style="width:100%"><tr><td class="border"><b>ITEM NAME</b></td><td class="border" align="right"><b>QTY</b></td><td class="border" align="right"><b>RATE</b></td><td class="border" align="right" style="padding-left:4px;"><b>AMT</b></td></tr> ' + invoice_items + '</table></td></tr> <tr> <td colspan="4" class="top-border">TOTAL QTY</td> <td class="top-border" align="right">' + total_order_items + '</td> </tr> <tr> <td colspan="4"><b>SUB TOTAL</b></td> <td align="right"><b>' + (invoice_total).toFixed(2) + '</b></td> </tr> <tr> <td colspan="4">DISCOUNT @ ' + dicount_percent + '%</td> <td align="right">' + ((invoice_total * dicount_percent) / 100).toFixed(2) + '</td> </tr> ' + branch_specific_taxes + ' <tr> <td colspan="4">TOTAL</td> <td style="height:auto;" align="right">' + (grand_total).toFixed(2) + '</td> </tr> <tr> <td colspan="4">ROUND OFF</td> <td style="height:auto;" align="right">' + (Math.round(grand_total) - (grand_total)).toFixed(2) + '</td> </tr> <tr> <td colspan="4" class="border title"><b>GRAND TOTAL</b></td> <td class="border title" style="height:auto;" align="right"><b>' + (Math.round(grand_total)).toFixed(2) + '</b></td> </tr> <tr> <td>&nbsp;</td> </tr>' + note +'<tr> <td colspan="5" align="center">' + service_tax_number_html + ' <br>' + other_number_html + ' <br>NO REVERSE CHARGE</td> </tr> <tr></tr> <tr> <td colspan="5" align="center">**** THANK YOU! VISIT AGAIN ****</td> </tr><tr> <td>&nbsp;</td> </tr> </tbody></table>');
 
 
                             popupWin.document.close();
@@ -4312,7 +4316,7 @@ app.controller('parcelOrderCtrl', ["$scope", "$http", "$state", "$modal", "$wind
                         $scope.parcel_printOrderCode = response.data.order_code;
                         $scope.note = response.data.notes;
                         if($scope.note != '' && $scope.note != null){
-                            note = '<tr> <td colspan="5"><b>NOTE : </b>' + $scope.note + '</td> </tr> <tr><td>&nbsp;</td></tr>';
+                            note = '<tr> <td colspan="5"><b>NOTE: </b>' + $scope.note + '</td> </tr> <tr><td>&nbsp;</td></tr>';
                         }
 
                         $scope.parcel_invoice_items = response.invoice_items;
@@ -4326,15 +4330,15 @@ app.controller('parcelOrderCtrl', ["$scope", "$http", "$state", "$modal", "$wind
                             city_name = response.branch_details.city_name;
                             $scope.branch_contact = response.branch_details.contact;
                             if($scope.branch_contact != '' && $scope.branch_contact != null){
-                                branch_contact = '<br> CONTACT : ' + $scope.branch_contact;
+                                branch_contact = '<br> CONTACT: ' + $scope.branch_contact;
                             }
                             if ($scope.service_tax_number != '' && $scope.service_tax_number != null) {
-                                service_tax_number_html = 'Service Code – 996331 <br> CIN No : ' + $scope.service_tax_number;
+                                service_tax_number_html = 'Service Code – 996331 <br> CIN No: ' + $scope.service_tax_number;
                             }
 
                             $scope.other_number = response.branch_details.other_number;
                             if ($scope.other_number != '' && $scope.other_number != null) {
-                                other_number_html = 'GSTIN : ' + $scope.other_number;
+                                other_number_html = 'GSTIN: ' + $scope.other_number;
                             }
                         }
 
@@ -4392,7 +4396,7 @@ app.controller('parcelOrderCtrl', ["$scope", "$http", "$state", "$modal", "$wind
                                 popupWin.document.open();
 
 
-                                popupWin.document.write('<style type="text/css"> table.tableizer-table { font-size: 12px; font-family: Verdana, Geneva, Arial, sans-serif; text-transform: uppercase;width:255px; }table.inner-table{border-collapse:collapse;} .tableizer-table td { padding: 2px 0px; margin: 0px; vertical-align: initial; }.bottom-border {border-width:1px;border-bottom : 1px dashed #000 !important;}.top-border {border-width:1px;border-top : 1px dashed #000 !important;} .border { border-width:1px;border-top : 1px dashed #000 !important;border-bottom : 1px dashed #000 !important; }.center{text-align:center;} .title {font-size : 16px;}</style><table class="tableizer-table"> <thead> <tr class="tableizer-firstrow"> <th colspan="5" class="center title">' + parcel_branch_name + '</th> </tr> </thead> <tbody> <tr> <td colspan="5" class="center">' + parcel_branch_address +'<br>'+ city_name + ' - ' + pincode + branch_contact + '</td> </tr> <tr > <td class="bottom-border center" colspan="5" > RETAIL INVOICE </td> </tr><tr> <td colspan="5" class="center" > PARCEL ORDER </td> </tr> <tr> <td class="center" colspan="5">' + parcel_order_date +' '+ parcel_order_time + '</td> </tr> <tr><td colspan="5" style="padding:0px;"> <table class="tableizer-table inner-table" style="width:100%"> <tr> <td>BILL : ' + $scope.parcel_printOrderCode + '</td> <td align="right">CAPTAIN : ' + captain + '</td> </tr> </table> </td></tr> <tr> <td colspan="5" style="padding:0px;"> <table class="tableizer-table inner-table" style="width:100%"><tr><td class="border"><b>ITEM NAME</b></td><td class="border" align="right"><b>QTY</b></td><td class="border" align="right"><b>RATE</b></td><td class="border" align="right" style="padding-left:4px;"><b>AMT</b></td></tr> ' + parcel_invoice_items + '</table></td> <tr> <td colspan="4" class="top-border">TOTAL QTY</td> <td class="top-border" align="right">' + total_order_items + '</td> </tr> <tr> <td colspan="4"><b>SUB TOTAL</b></td> <td align="right"><b>' + (parcel_invoice_total).toFixed(2) + '</b></td> </tr> <tr> <td colspan="4">DISCOUNT @ ' + dicount_percent + '%</td> <td align="right">' + ((parcel_invoice_total * dicount_percent) / 100).toFixed(2) + '</td> </tr> ' + parcel_branch_specific_taxes + ' <tr> <td colspan="4">TOTAL</td> <td style="height:auto;" align="right">' + (parcel_grand_total).toFixed(2) + '</td> </tr> <tr> <td colspan="4">ROUND OFF</td> <td style="height:auto;" align="right">' + (Math.round(parcel_grand_total) - (parcel_grand_total)).toFixed(2) + '</td> </tr><tr> <td colspan="4" class="border title"><b>GRAND TOTAL</b></td> <td class="border title" style="height:auto;" align="right"><b>' + (Math.round(parcel_grand_total)).toFixed(2) + '</b></td> </tr> <tr> <td>&nbsp;</td> </tr>' + note +'<tr> <td colspan="5" align="center">' + service_tax_number_html + ' <br>' + other_number_html + ' <br>NO REVERSE CHARGE</td> </tr> <tr></tr> <tr> <td colspan="5" align="center">**** THANK YOU ! VISIT AGAIN ****</td> </tr><tr> <td>&nbsp;</td> </tr> </tbody></table>');
+                                popupWin.document.write('<style type="text/css"> table.tableizer-table { font-size: 12px; font-family: Verdana, Geneva, Arial, sans-serif; text-transform: uppercase;width:255px; }table.inner-table{border-collapse:collapse;} .tableizer-table td { padding: 2px 0px; margin: 0px; vertical-align: initial; }.bottom-border {border-width:1px;border-bottom : 1px dashed #000 !important;}.top-border {border-width:1px;border-top : 1px dashed #000 !important;} .border { border-width:1px;border-top : 1px dashed #000 !important;border-bottom : 1px dashed #000 !important; }.center{text-align:center;} .title {font-size : 16px;}</style><table class="tableizer-table"> <thead> <tr class="tableizer-firstrow"> <th colspan="5" class="center title">' + parcel_branch_name + '</th> </tr> </thead> <tbody> <tr> <td colspan="5" class="center">' + parcel_branch_address +'<br>'+ city_name + ' - ' + pincode + branch_contact + '</td> </tr> <tr > <td class="bottom-border center" colspan="5" > RETAIL INVOICE </td> </tr><tr> <td colspan="5" class="center" > PARCEL ORDER </td> </tr> <tr> <td class="center" colspan="5">' + parcel_order_date +' '+ parcel_order_time + '</td> </tr> <tr><td colspan="5" style="padding:0px;"> <table class="tableizer-table inner-table" style="width:100%"> <tr> <td>BILL: ' + $scope.parcel_printOrderCode + '</td> <td align="right">CAPTAIN: ' + captain + '</td> </tr> </table> </td></tr> <tr> <td colspan="5" style="padding:0px;"> <table class="tableizer-table inner-table" style="width:100%"><tr><td class="border"><b>ITEM NAME</b></td><td class="border" align="right"><b>QTY</b></td><td class="border" align="right"><b>RATE</b></td><td class="border" align="right" style="padding-left:4px;"><b>AMT</b></td></tr> ' + parcel_invoice_items + '</table></td> <tr> <td colspan="4" class="top-border">TOTAL QTY</td> <td class="top-border" align="right">' + total_order_items + '</td> </tr> <tr> <td colspan="4"><b>SUB TOTAL</b></td> <td align="right"><b>' + (parcel_invoice_total).toFixed(2) + '</b></td> </tr> <tr> <td colspan="4">DISCOUNT @ ' + dicount_percent + '%</td> <td align="right">' + ((parcel_invoice_total * dicount_percent) / 100).toFixed(2) + '</td> </tr> ' + parcel_branch_specific_taxes + ' <tr> <td colspan="4">TOTAL</td> <td style="height:auto;" align="right">' + (parcel_grand_total).toFixed(2) + '</td> </tr> <tr> <td colspan="4">ROUND OFF</td> <td style="height:auto;" align="right">' + (Math.round(parcel_grand_total) - (parcel_grand_total)).toFixed(2) + '</td> </tr><tr> <td colspan="4" class="border title"><b>GRAND TOTAL</b></td> <td class="border title" style="height:auto;" align="right"><b>' + (Math.round(parcel_grand_total)).toFixed(2) + '</b></td> </tr> <tr> <td>&nbsp;</td> </tr>' + note +'<tr> <td colspan="5" align="center">' + service_tax_number_html + ' <br>' + other_number_html + ' <br>NO REVERSE CHARGE</td> </tr> <tr></tr> <tr> <td colspan="5" align="center">**** THANK YOU! VISIT AGAIN ****</td> </tr><tr> <td>&nbsp;</td> </tr> </tbody></table>');
 
                                 popupWin.document.close();
 
@@ -5392,12 +5396,12 @@ app.controller('deliveryOrderCtrl', ["$scope", "$http", "$state", "$modal", "$wi
                     if (response.branch_details) {
                         $scope.service_tax_number = response.branch_details.service_tax_number;
                         if ($scope.service_tax_number != '' && $scope.service_tax_number != null) {
-                            service_tax_number_html = '<br>Service Code – 996331  CIN No : ' + $scope.service_tax_number;
+                            service_tax_number_html = '<br>Service Code – 996331  CIN No: ' + $scope.service_tax_number;
                         }
 
                         $scope.other_number = response.branch_details.other_number;
                         if ($scope.other_number != '' && $scope.other_number != null) {
-                            other_number_html = '<br>No Reverse Charge GSTIN : ' + $scope.other_number;
+                            other_number_html = '<br>No Reverse Charge GSTIN: ' + $scope.other_number;
                         }
                     }
 

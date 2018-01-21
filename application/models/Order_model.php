@@ -285,7 +285,7 @@ class Order_model extends CI_Model
 
     public function getDetailsByOrderIdForLive($order_id)
     {
-        $rowcount = $this->db->query("SELECT * from order_detail_live
+        $rowcount = $this->db->query("SELECT order_id from order_detail_live
                                     WHERE order_id = $order_id ")->num_rows();
 
         return $rowcount;
@@ -317,45 +317,50 @@ class Order_model extends CI_Model
 
     public function insert_into_order_live($post_data)
     {
-        $data = array(
+        if(!empty($post_data['table_id'])){
+            $data = array(
 
-            'order_id'=> $post_data['order_id'],
+                'order_id'=> $post_data['order_id'],
 
-            'table_detail_id'=> isset($post_data['table_id']) ? $post_data['table_id'] : null,
+                'table_detail_id'=> isset($post_data['table_id']) ? $post_data['table_id'] : null,
 
-            // 'waiter_id'=> $post_data['waiter_id'],
+                // 'waiter_id'=> $post_data['waiter_id'],
 
-            // 'order_date_time'=> date("Y-m-d H:i:s"),
+                // 'order_date_time'=> date("Y-m-d H:i:s"),
 
-            // 'total_items'=> $post_data['total_items'],
+                // 'total_items'=> $post_data['total_items'],
 
-            // 'tax'=> $post_data['tax'],
+                // 'tax'=> $post_data['tax'],
 
-            // 'total_amount'=> $post_data['total_amount'],
+                // 'total_amount'=> $post_data['total_amount'],
 
-            // 'return_amount'=> $post_data['return_amount'],
+                // 'return_amount'=> $post_data['return_amount'],
 
-            );
+                );
 
-        // check before insert
-        // if order_id is available in table data
-        $is_order_id_available = $this->getDetailsByOrderIdForLive($data['order_id']);
+            // check before insert
+            // if order_id is available in table data
+            $is_order_id_available = $this->getDetailsByOrderIdForLive($data['order_id']);
 
-        if($is_order_id_available>0)
-        {
-            // update
-           // $data['updated']= date("Y-m-d H:i:s");
-            $this->db->where('order_id', $data['order_id']);
-            $result = $this->db->update('order_detail_live',$data);
-        }
-        else
-        {
-            // insert
-           // $data['created']= date("Y-m-d H:i:s");
-            $result = $this->db->insert('order_detail_live',$data);
-        }
+            if($is_order_id_available>0)
+            {
+                // update
+               // $data['updated']= date("Y-m-d H:i:s");
+                $this->db->where('order_id', $data['order_id']);
+                $result = $this->db->update('order_detail_live',$data);
+            }
+            else
+            {
+                // insert
+               // $data['created']= date("Y-m-d H:i:s");
+                $result = $this->db->insert('order_detail_live',$data);
+            }
 
-        return $result;
+            return $result;
+        } else {
+            return false;
+        }    
+        
     }
 
     public function getDetailsById($order_id)
