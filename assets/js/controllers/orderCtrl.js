@@ -1996,69 +1996,73 @@ app.controller('orderCtrl', ["$scope", "$http", "$state", "$modal", "$window", "
                         }
                     });
                     request.success(function(response) {
+                        if(response.status == 1){
+                            // get inserted order_id
 
-                        // get inserted order_id
-
-                        $scope.order_id = response.order_id;
-
-
-                        // order items
-                        var request = $http({
-                            method: "post",
-                            url: "index.php/order/add_order_items",
-                            data: 'order_id=' + $scope.order_id + '&products=' + JSON.stringify(selected_products),
-                            headers: {
-                                'Content-Type': 'application/x-www-form-urlencoded'
-                            }
-                        });
-
-                        request.success(function(response) {
-                            // console.log(response);
-
-                            $scope.selected_table_id = angular.element('#table_id').val();
-                            $scope.selected_table_number = angular.element('#table_number').val();
+                            $scope.order_id = response.order_id;
 
 
-                            angular.forEach($scope.data, function(value, key) {
-
-                                // console.log(value);
-
-                                if ($scope.selected_table_id == value.table_detail_id) {
-                                    value.order_id = $scope.order_id;
-                                    value.order_code = $scope.order_code;
-                                    //value.total_amount = $scope.finalTotal();
-                                    value.total_amount = $scope.finalOrderTotal();
+                            // order items
+                            var request = $http({
+                                method: "post",
+                                url: "index.php/order/add_order_items",
+                                data: 'order_id=' + $scope.order_id + '&products=' + JSON.stringify(selected_products),
+                                headers: {
+                                    'Content-Type': 'application/x-www-form-urlencoded'
                                 }
-                                $scope.is_bill_saved = true;
                             });
 
-                        });
+                            request.success(function(response) {
+                                // console.log(response);
 
-                        setTimeout(function() {
-                            $('#table_row_' + angular.element('#table_number').val()).click();
-                        }, 400);
-
-                        // order tax
-
-                        //console.log($scope.tax_arr);
-
-                        var request = $http({
-                            method: "post",
-                            url: "index.php/order/add_order_tax",
-                            data: 'order_id=' + $scope.order_id + '&tax_arr=' + JSON.stringify($scope.tax_arr),
-                            headers: {
-                                'Content-Type': 'application/x-www-form-urlencoded'
-                            }
-                        });
-
-                        request.success(function(response) {
-                            //console.log(response);
-
-                        });
+                                $scope.selected_table_id = angular.element('#table_id').val();
+                                $scope.selected_table_number = angular.element('#table_number').val();
 
 
-                        // $rootScope.$emit("CallParcelGetNextBill");
-                        // $rootScope.$emit("CallDeliveryGetNextBill");
+                                angular.forEach($scope.data, function(value, key) {
+
+                                    // console.log(value);
+
+                                    if ($scope.selected_table_id == value.table_detail_id) {
+                                        value.order_id = $scope.order_id;
+                                        value.order_code = $scope.order_code;
+                                        //value.total_amount = $scope.finalTotal();
+                                        value.total_amount = $scope.finalOrderTotal();
+                                    }
+                                    $scope.is_bill_saved = true;
+                                });
+
+                            });
+
+                            setTimeout(function() {
+                                $('#table_row_' + angular.element('#table_number').val()).click();
+                            }, 400);
+
+                            // order tax
+
+                            //console.log($scope.tax_arr);
+
+                            var request = $http({
+                                method: "post",
+                                url: "index.php/order/add_order_tax",
+                                data: 'order_id=' + $scope.order_id + '&tax_arr=' + JSON.stringify($scope.tax_arr),
+                                headers: {
+                                    'Content-Type': 'application/x-www-form-urlencoded'
+                                }
+                            });
+
+                            request.success(function(response) {
+                                //console.log(response);
+
+                            });
+
+
+                            // $rootScope.$emit("CallParcelGetNextBill");
+                            // $rootScope.$emit("CallDeliveryGetNextBill");
+                        } else { 
+                            alert("Error: Item is not inserted. Please try again.");
+                        }
+                        
 
 
 
