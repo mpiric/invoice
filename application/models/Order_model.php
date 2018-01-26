@@ -2057,6 +2057,95 @@ CASE WHEN payment_type = 1 THEN "Cash" WHEN payment_type = 2 THEN "Credit Card" 
         $result = $query->row_array();
         return $result;
     }
+
+    public function get_daily_sales_by_branch_and_brand($cal_date, $branch_id, $brand_id)
+    {
+        $branch_cond       = '';
+        $select_cond       = '';
+        $inner_select_cond = '';
+        
+        
+        if ($branch_id != '') {
+            $branch_id   = $branch_id;
+            $branch_cond = " AND o.branch_id= " . $branch_id;
+        } else {
+            $session_data = $this->session->userdata('logged_in');
+            
+            if ($session_data['branch_type'] != 1) {
+                $branch_id   = $session_data['branch_id'];
+                $branch_cond = " AND o.branch_id= " . $branch_id;
+            }
+        }
+        
+        if ($brand_id != '') {
+            $select_cond       = " AND pc.brand_id = " . $brand_id;
+            $inner_select_cond = " AND ipc.brand_id = " . $brand_id;
+        }
+        
+        
+        
+        
+        /* $sql = "SELECT CAST( SUM(  CASE
+        WHEN (ROUND(o.total_amount)) < o.total_amount
+        THEN ROUND(o.total_amount) - o.total_amount
+        WHEN (ROUND(o.total_amount)) > o.total_amount
+        THEN CONCAT('+', ROUND(o.total_amount) - o.total_amount)
+        WHEN (ROUND(o.total_amount)) = o.total_amount
+        THEN  ROUND(o.total_amount) - o.total_amount
+        END ) AS DECIMAL(10,2) )  AS roundoff_value,
+        (SELECT sum(ioi.quantity*ioi.price) from order_items ioi LEFT JOIN product ip ON ip.product_id = ioi.product_id LEFT JOIN product_category ipc ON ipc.product_category_id = ip.product_category_id where ioi.order_id=o.order_id ".$inner_select_cond.") as sub_total,
+        ( SUM((SELECT SUM(quantity*price) FROM order_items WHERE order_id=o.order_id AND ( o.order_type=2 OR o.order_type=3 ) )) ) AS tax_free,
+        SUM(((SELECT sum(quantity*price) from order_items where order_id=o.order_id) * o.discount_amount/100)) as discount,
+        SUM(o.total_amount) AS bill_amount,
+        SUM(ROUND(o.total_amount)) AS roundoff
+        FROM order_detail o
+        LEFT JOIN branch b ON b.branch_id = o.branch_id
+        LEFT JOIN order_items oi ON oi.order_id = o.order_id
+        LEFT JOIN product p ON p.product_id = oi.product_id
+        LEFT JOIN product_category pc ON pc.product_category_id = p.product_category_id
+        WHERE DATE( o.order_date_time ) = '".$cal_date."' $branch_cond $select_cond AND o.is_print=1
+        GROUP BY DATE(o.order_date_time)"; */
+        
+        
+        /*$sql = 'SELECT CAST( SUM(  CASE
+        WHEN (ROUND(o.total_amount)) < o.total_amount
+                THEN ROUND(o.total_amount) - o.total_amount
+         WHEN (ROUND(o.total_amount)) > o.total_amount
+                THEN CONCAT("+", ROUND(o.total_amount) - o.total_amount)
+         WHEN (ROUND(o.total_amount)) = o.total_amount
+                THEN  ROUND(o.total_amount) - o.total_amount
+            END ) AS DECIMAL(10,2) )  AS roundoff_value,        
+      SUM((SELECT sum(quantity*price) from order_items where order_id=o.order_id)) as sub_total,
+      ( SUM((SELECT SUM(quantity*price) FROM order_items WHERE order_id=o.order_id AND
+      ( o.order_type=2 ) )) ) AS tax_free,
+      SUM(((SELECT sum(quantity*price) from order_items where order_id=o.order_id) * o.discount_amount/100)) as discount,      
+             SUM(o.total_amount) AS bill_amount,  
+             SUM(ROUND(o.total_amount)) AS roundoff,o.branch_id AS branch_id
+      FROM order_detail o                
+      LEFT JOIN branch b ON b.branch_id = o.branch_id              
+      WHERE DATE( o.order_date_time ) = "' . $cal_date .  $branch_cond . $select_cond . '" AND o.is_print=1 
+      GROUP BY DATE(o.order_date_time)' ; */
+    
+    
+    
+        $sql = " SELECT SUM(sub_total) as sub_total  
+                FROM (
+                SELECT SUM(oi.quantity*oi.price) as sub_total FROM order_detail o 
+                LEFT JOIN order_items oi ON oi.order_id = o.order_id
+                LEFT JOIN product p ON p.product_id = oi.product_id
+                LEFT JOIN product_category pc ON pc.product_category_id = p.product_category_id 
+                WHERE DATE( o.order_date_time ) = '" . $cal_date . "' $branch_cond $select_cond AND o.is_print=1 GROUP BY o.order_id 
+            ) t"; 
+        
+        
+        $query = $this->db->query($sql);
+        //$str = $this->db->last_query();
+        //echo $str;die;
+
+        
+        $result = $query->row_array();
+        return $result;
+    }
 }
 
 ?>

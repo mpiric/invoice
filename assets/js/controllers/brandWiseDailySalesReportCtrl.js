@@ -231,8 +231,8 @@ app.controller('brandWiseDailySalesReportCtrl', ["$scope", "$http", "$state", "$
         request.success(function(response) {
 
             $scope.salesbycategorylist = response.data;
-            //console.log("Update");  
-            //console.log(response.data);  
+            // console.log("Update");  
+            // console.log(response.data);  
             //console.log("Length : "+$scope.salesbycategorylist.length);  
         });
 
@@ -343,6 +343,32 @@ app.controller('brandWiseDailySalesReportCtrl', ["$scope", "$http", "$state", "$
         }
         //console.log(final_total);
         return tax_free_final_total;
+    }
+
+    $scope.getCGST = function() {
+        var CGST_final_total = 0;
+        for (var i = 0; i < $scope.salesbycategorylist.length; i++) {
+
+            var order = $scope.salesbycategorylist[i];
+
+            CGST_final_total += parseFloat(order.CGST != null ? order.CGST : 0);
+
+        }
+        //console.log(final_total);
+        return CGST_final_total;
+    }
+
+    $scope.getSGST = function() {
+        var SGST_final_total = 0;
+        for (var i = 0; i < $scope.salesbycategorylist.length; i++) {
+
+            var order = $scope.salesbycategorylist[i];
+
+            SGST_final_total += parseFloat(order.SGST != null ? order.SGST : 0);
+
+        }
+        //console.log(final_total);
+        return SGST_final_total;
     }
 
     $scope.getTotaldiscount = function() {

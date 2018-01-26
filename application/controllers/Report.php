@@ -943,6 +943,10 @@ class Report extends CI_Controller
     {
         $this->load->view('report/waiter_report');
     }
+
+    public function brandwisedailysales() {
+        $this->load->view('report/brand_wise_daily_sales');
+    }
     
     public function waiter_rpt_data()
     {
@@ -3034,6 +3038,214 @@ class Report extends CI_Controller
         $output = array_map("unserialize",
         array_unique(array_map("serialize", $src)));
         return $output;
+    }
+
+    public function daily_sales_rpt_by_brand() {
+
+        $branch_id = '';
+        $brand_id = '';
+        $fromdate = '';
+
+
+        $year = date("Y");
+        $month = date("m");
+
+        $list = array();
+
+        for ($d = 1; $d <= 31; $d++) {
+            $time = mktime(12, 0, 0, $month, $d, $year);
+            if (date('m', $time) == $month)
+                $list[] = date('Y-m-d', $time);
+        }
+
+
+        $this->load->model('order_model');
+
+        $j = 0;
+
+        $dailyDetails = array();
+
+        foreach ($list as $cal_date) {
+
+            $result = $this->order_model->get_daily_sales_by_branch_and_brand($cal_date, $branch_id, $brand_id);
+
+            //$response = $result;
+            $response = array();
+
+            /* $response['roundoff_value'] = isset($result['roundoff_value']) ? $result['roundoff_value'] : 0.00;
+              $response['sub_total'] = isset($result['sub_total']) ? $result['sub_total'] : 0;
+              $response['tax_free'] = isset($result['tax_free']) ? $result['tax_free'] : 0;
+              $response['discount'] = isset($result['discount']) ? $result['discount'] : 0;
+              $response['bill_amount'] = isset($result['bill_amount']) ? $result['bill_amount'] : 0;
+              $response['roundoff'] = isset($result['roundoff']) ? $result['roundoff'] : 0;
+              $response['created'] = $cal_date; */
+
+            //$response['roundoff_value'] = isset($result['roundoff_value']) ? $result['roundoff_value'] : 0.00;
+            $response['sub_total'] = isset($result['sub_total']) ? $result['sub_total'] : 0;
+            $response['CGST'] = $result['sub_total']*0.025;
+            $response['SGST'] = $result['sub_total']*0.025;
+            $response['bill_amount'] = $response['sub_total'] + ($response['sub_total']*0.05);
+            //$response['roundoff'] = $response['bill_amount'];
+            //$response['roundoff'] = isset($result['roundoff']) ? $result['roundoff'] : 0;
+            $response['created'] = $cal_date;
+
+            // find tax by order
+            // get all orders of the given date
+            /*$this->load->model('tax_main_model');
+            $tax_list = $this->tax_main_model->tax_list_all();
+
+            $order_tax_list = array();
+
+            foreach ($tax_list as $tax) {
+                $tax_id = $tax['tax_id'];
+                // get tax data by date and tax_id
+                $tax_data = $this->order_model->get_tax_data_by_date_and_tax_id($cal_date, $tax_id);
+
+                $order_tax_list[$tax_id] = $tax_data;
+            }
+
+            $response['order_tax'] = $order_tax_list;*/
+
+            $details[$j] = $response;
+
+            $j++;
+        }
+
+
+        $response['status'] = "1";
+        $response['data'] = $details;
+        echo json_encode($response);
+        die;
+    }
+
+
+    public function get_daily_sales_by_branch_and_brand() {
+
+        $branch_id = '';
+        $fromdate = '';
+
+        $year = date("Y");
+        $month = date("m");
+
+        $brand_id = '';
+
+        if (isset($_POST['brand_id']) && $_POST['brand_id'] != '') {
+            $brand_id = $_POST['brand_id'];
+        } else {
+            $brand_id = '';
+        }
+
+        if (isset($_POST['branch_id']) && $_POST['branch_id'] != '' && isset($_POST['fromdate']) && $_POST['fromdate'] != '') {
+            $branch_id = $_POST['branch_id'];
+            $fromdate = date('Y-m-d H:i:s', strtotime($_POST['fromdate'] . '00:00:00'));
+
+            $from_date = $_POST['fromdate'];
+            $frdate_arr = explode('/', $from_date);
+
+            if (!empty($frdate_arr)) {
+                $year = isset($frdate_arr[0]) ? $frdate_arr[0] : '';
+                $month = isset($frdate_arr[1]) ? $frdate_arr[1] : '';
+            }
+
+            $year = (int) $year;
+            $month = (int) $month;
+        } elseif (isset($_POST['fromdate']) && $_POST['fromdate'] != '') {
+            $from_date = $_POST['fromdate'];
+            $frdate_arr = explode('/', $from_date);
+
+            if (!empty($frdate_arr)) {
+                $year = isset($frdate_arr[0]) ? $frdate_arr[0] : '';
+                $month = isset($frdate_arr[1]) ? $frdate_arr[1] : '';
+            }
+
+            $year = (int) $year;
+            $month = (int) $month;
+        } else if (isset($_POST['branch_id']) && $_POST['branch_id'] != '') {
+            $branch_id = $_POST['branch_id'];
+        }
+
+        $list = array();
+
+        for ($d = 1; $d <= 31; $d++) {
+            $time = mktime(12, 0, 0, $month, $d, $year);
+            if (date('m', $time) == $month)
+                $list[] = date('Y-m-d', $time);
+        }
+
+        //echo '<pre>';print_r($list);die;
+
+
+        $this->load->model('order_model');
+
+        $j = 0;
+
+        $dailyDetails = array();
+        //echo "<pre>";
+        //print_r($list);
+        //exit;
+        foreach ($list as $cal_date) {
+
+            $result = $this->order_model->get_daily_sales_by_branch_and_brand($cal_date, $branch_id, $brand_id);
+            //$result = $this->order_model->get_daily_sales_by_branch($cal_date,$branch_id);
+            //$response = $result;
+            $response = array();
+
+
+            /* $response['roundoff_value'] = isset($result['roundoff_value']) ? $result['roundoff_value'] : 0.00;
+              $response['sub_total'] = isset($result['sub_total']) ? $result['sub_total'] : 0;
+              $response['tax_free'] = isset($result['tax_free']) ? $result['tax_free'] : 0;
+              $response['discount'] = isset($result['discount']) ? $result['discount'] : 0;
+              $response['bill_amount'] = $result['sub_total']-$response['discount'];
+              $response['roundoff'] = $response['bill_amount'];
+              $response['created'] = $cal_date;/
+
+            $response['roundoff_value'] = isset($result['roundoff_value']) ? $result['roundoff_value'] : 0.00;
+            $response['sub_total'] = isset($result['sub_total']) ? $result['sub_total'] : 0;
+            $response['tax_free'] = isset($result['tax_free']) ? $result['tax_free'] : 0;
+            $response['discount'] = isset($result['discount']) ? $result['discount'] : 0;
+            $response['bill_amount'] = $result['sub_total'] - $response['discount'];
+            //$response['roundoff'] = $response['bill_amount'];
+            $response['roundoff'] = isset($result['roundoff']) ? $result['roundoff'] : 0;
+            $response['created'] = $cal_date;*/
+            $response['sub_total'] = isset($result['sub_total']) ? $result['sub_total'] : 0;
+            $response['CGST'] = $result['sub_total']*0.025;
+            $response['SGST'] = $result['sub_total']*0.025;
+            $response['bill_amount'] = $response['sub_total'] + ($response['sub_total']*0.05);
+            //$response['roundoff'] = $response['bill_amount'];
+            //$response['roundoff'] = isset($result['roundoff']) ? $result['roundoff'] : 0;
+            $response['created'] = $cal_date;
+
+            // find tax by order
+            // get all orders of the given date
+            /*$this->load->model('tax_main_model');
+            $tax_list = $this->tax_main_model->tax_list_all();
+
+            $order_tax_list = array();
+
+            foreach ($tax_list as $tax) {
+                $tax_id = $tax['tax_id'];
+                // get tax data by date and tax_id
+                $tax_data = $this->order_model->get_tax_data_by_date_and_tax_id_daily_sales_by_brand($cal_date, $tax_id, $branch_id, $brand_id);
+
+                $order_tax_list[$tax_id] = $tax_data;
+            }
+
+            $response['order_tax'] = $order_tax_list;*/
+
+            $details[$j] = $response;
+
+            $j++;
+        }
+
+
+        $response['status'] = "1";
+        $response['data'] = $details;
+
+        ///echo "<pre>";
+        //print_r($response['data']);
+        //exit;
+        echo json_encode($response);
+        die;
     }
 }
 
