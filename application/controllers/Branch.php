@@ -527,11 +527,11 @@ class Branch extends CI_Controller {
 
 			$total_income_data = $this->order_model->getTotalincome($branch_id);
 			//top 10 selling items of current month
-			$top_items = $this->order_model->top_selling_items_of_current_month($branch_id);
+			//$top_items = $this->order_model->top_selling_items_of_current_month($branch_id);
 
 			$response['status'] = '1';
 
-			$response['top_items'] = $top_items;
+			//$response['top_items'] = $top_items;
 			
 			if($daily_income_data['daily_income']!=''){
 				$response['daily_income'] = number_format($daily_income_data['daily_income'], 2);

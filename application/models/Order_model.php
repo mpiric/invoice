@@ -1869,7 +1869,9 @@ CASE WHEN payment_type = 1 THEN "Cash" WHEN payment_type = 2 THEN "Credit Card" 
         $session_data = $this->session->userdata('logged_in');
         $branch_id    = $session_data['branch_id'];
         $branch_type  = $session_data['branch_type'];
-        $sql          = "SELECT SUM(total_amount) as live_amount FROM order_detail WHERE is_print = '0' AND branch_id = '" . $branch_id . "' AND order_type = '1' ";
+        $sql          = "SELECT SUM(o.total_amount) as live_amount FROM order_detail o
+                        LEFT JOIN order_detail_live l ON l.order_id = o.order_id
+                        WHERE o.is_print = '0' AND o.branch_id = '" . $branch_id . "' AND o.order_type = '1' AND l.table_detail_id !=0 ";
         $query        = $this->db->query($sql);
         $result       = $query->result_array();
         return $result[0]['live_amount'];
@@ -1877,19 +1879,24 @@ CASE WHEN payment_type = 1 THEN "Cash" WHEN payment_type = 2 THEN "Credit Card" 
     
     public function change_table($order_id, $new_table_id)
     {
-        $result = array();
-        $sql    = "SELECT COUNT(*) as count FROM order_detail_live WHERE table_detail_id = '" . $new_table_id . "'";
-        $query  = $this->db->query($sql);
-        $result = $query->result_array();
-        if ($result[0]['count'] == 0) {
-            $update = "UPDATE order_detail SET table_detail_id = '" . $new_table_id . "' WHERE order_id = '" . $order_id . "'";
-            $query  = $this->db->query($update);
-            $update = "UPDATE order_detail_live SET table_detail_id = '" . $new_table_id . "' WHERE order_id = '" . $order_id . "'";
-            $query  = $this->db->query($update);
-            return 1;
+        if(!empty($new_table_id)){
+            $result = array();
+            $sql    = "SELECT COUNT(*) as count FROM order_detail_live WHERE table_detail_id = '" . $new_table_id . "'";
+            $query  = $this->db->query($sql);
+            $result = $query->result_array();
+            if ($result[0]['count'] == 0) {
+                $update = "UPDATE order_detail SET table_detail_id = '" . $new_table_id . "' WHERE order_id = '" . $order_id . "'";
+                $query  = $this->db->query($update);
+                $update = "UPDATE order_detail_live SET table_detail_id = '" . $new_table_id . "' WHERE order_id = '" . $order_id . "'";
+                $query  = $this->db->query($update);
+                return 1;
+            } else {
+                return 0;
+            }
         } else {
             return 0;
         }
+        
     }
     
     /*** API For App ***/
