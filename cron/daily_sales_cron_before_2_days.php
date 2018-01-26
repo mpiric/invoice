@@ -24,18 +24,19 @@
 
 	// //$current_date = $date['today'];
 
-	if(isset($_REQUEST['date']) && !empty($_REQUEST['date'])) {
-		$current_date = $_REQUEST['date'];
-	} else {
-		$current_date = date("Y-m-d");
-	}
+
 	
+	$current_date = date('Y-m-d', strtotime('-2 days', strtotime(date("Y-m-d"))));
 	//$current_date = '2017-07-01';
 
+	$selected_branch = "5,6,8"; //insert branch id here
+
+	$array=array_map('intval', explode(',', $selected_branch));
+	$branch_array = implode("','",$array);
 
 	//branch list
 
-	$query = $conn->prepare(" SELECT * FROM branch ");
+	$query = $conn->prepare(" SELECT * FROM branch WHERE branch_id IN ('".$branch_array."')");
 
 	$query->execute();
 
@@ -43,7 +44,7 @@
 
 	$branch_list = $query->fetchAll();
 
-	//echo "<pre>";print_r($branch_list);
+	
 	
 
 	foreach ($branch_list as $branch) 
@@ -335,7 +336,7 @@
 							                       SUM(ROUND(o.total_amount)) AS roundoff,o.branch_id AS branch_id
 							                FROM order_detail o                
 							                LEFT JOIN branch b ON b.branch_id = o.branch_id              
-							                WHERE DATE( o.order_date_time ) = "'.$current_date.'" AND o.branch_id="'.$branch_id.'" AND o.is_print=1
+							                WHERE DATE( o.order_date_time ) = "'.$current_date.'" AND o.branch_id="'.$branch_id.'" AND o.is_print=1 AND o.table_detail_id != 0
 							                GROUP BY DATE(o.order_date_time)' );
 
 

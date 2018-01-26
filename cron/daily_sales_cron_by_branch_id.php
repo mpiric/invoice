@@ -24,18 +24,28 @@
 
 	// //$current_date = $date['today'];
 
+
 	if(isset($_REQUEST['date']) && !empty($_REQUEST['date'])) {
 		$current_date = $_REQUEST['date'];
 	} else {
 		$current_date = date("Y-m-d");
 	}
-	
-	//$current_date = '2017-07-01';
 
+	//echo $current_date;exit;
+	//$current_date = '2017-07-01';
+	if(isset($_REQUEST['branch']) && !empty($_REQUEST['branch'])) {
+		$selected_branch = $_REQUEST['branch'];
+	} else {
+		$selected_branch = "5,6,8"; //insert branch id here
+	}
+	
+
+	$array=array_map('intval', explode(',', $selected_branch));
+	$branch_array = implode("','",$array);
 
 	//branch list
 
-	$query = $conn->prepare(" SELECT * FROM branch ");
+	$query = $conn->prepare(" SELECT * FROM branch WHERE branch_id IN ('".$branch_array."')");
 
 	$query->execute();
 
@@ -43,7 +53,7 @@
 
 	$branch_list = $query->fetchAll();
 
-	//echo "<pre>";print_r($branch_list);
+	
 	
 
 	foreach ($branch_list as $branch) 
@@ -223,7 +233,7 @@
 	            $final['discount']   = isset($daily_result['discount']) ? $daily_result['discount'] : 0;
 	            $final['bill_amount'] = isset($daily_result['bill_amount']) ? $daily_result['bill_amount'] : 0;
 	            $final['roundoff']  = isset($daily_result['roundoff']) ? $daily_result['roundoff'] : 0;
-	            $final['created']  =  date("Y-m-d");
+	            $final['created']  =  $current_date;
 	            //$final['created']  =  '2017-07-01';
 
             	$final['branch_id'] = isset($daily_result['branch_id']) ? $daily_result['branch_id'] : 0; 
@@ -254,7 +264,7 @@
 
 				if($qry_result=='0')
 				{
-					//echo "Insert";
+					echo "Insert";
 					$ins = "INSERT INTO `daily_sales` (branch_id,created,net_amount,tax_free,discount,bill_amount,round_off,total".$field_cond.") VALUES (".$final['branch_id'].",'".$final['created']."',".$final['sub_total'].",".$final['tax_free'].",".$final['discount'].",".$final['bill_amount'].",".$final['roundoff_value'].",".$final['roundoff']."".$val_cond.");";
 
 	            	//echo $ins;
@@ -270,7 +280,7 @@
 				}
 				else
 				{
-					//echo "Update";
+					echo "Update";
 					$field_cond =  str_replace(',', ' ', $field_cond);
 	            	$field_cond = explode(' ', $field_cond);
 	            	array_splice($field_cond, 0,1);
@@ -335,7 +345,7 @@
 							                       SUM(ROUND(o.total_amount)) AS roundoff,o.branch_id AS branch_id
 							                FROM order_detail o                
 							                LEFT JOIN branch b ON b.branch_id = o.branch_id              
-							                WHERE DATE( o.order_date_time ) = "'.$current_date.'" AND o.branch_id="'.$branch_id.'" AND o.is_print=1
+							                WHERE DATE( o.order_date_time ) = "'.$current_date.'" AND o.branch_id="'.$branch_id.'" AND o.is_print=1 AND o.table_detail_id != 0
 							                GROUP BY DATE(o.order_date_time)' );
 
 

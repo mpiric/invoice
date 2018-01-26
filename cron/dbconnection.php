@@ -7,10 +7,10 @@ class Connection {
     function __construct() {
 			
 		
-		$servername = "sankalpdb.cnbrifrfy4wn.ap-south-1.rds.amazonaws.com";
-		$username = "masterdb";
-		$password = "masterdb";
-		$database = "sankalpdb";
+		$servername = "localhost";
+		$username = "janak321";
+		$password = "uteredy9e";
+		$database = "zadmin_rst";
 
 		try 
 		{
