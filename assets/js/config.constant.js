@@ -83,6 +83,7 @@ app.constant('JS_REQUIRES', {
         'productrecipeCtrl': 'assets/js/controllers/productrecipeCtrl.js',
         'tableCtrl': 'assets/js/controllers/tableCtrl.js',
         'brandWiseDailySalesReportCtrl': 'assets/js/controllers/brandWiseDailySalesReportCtrl.js',
+        'paymentCtrl': 'assets/js/controllers/paymentCtrl.js',
         
 
 

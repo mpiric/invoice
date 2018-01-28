@@ -301,7 +301,52 @@ app.config(['$stateProvider', '$urlRouterProvider', '$controllerProvider', '$com
                     label: 'Info'
                 },
                 resolve: loadSequence('ngTable', 'taxmainCtrl')
-            }).state('app.waitercommission', {
+            }).
+
+
+            state('app.payment', {
+                url: '/payment',
+                template: '<div ui-view class="fade-in-up"></div>',
+                title: 'Payment Type',
+                ncyBreadcrumb: {
+                    label: 'Payment Type'
+                }
+            }).state('app.payment.create', {
+                url: '/create',
+                templateUrl: "index.php/payment/create",
+                title: 'Create',
+                ncyBreadcrumb: {
+                    label: 'Create'
+                },
+                resolve: loadSequence('paymentCtrl')
+            }).state('app.payment.update', {
+                url: '/update?payment_id',
+                templateUrl: "index.php/payment/create",
+                title: 'Update',
+                ncyBreadcrumb: {
+                    label: 'Update'
+                },
+                resolve: loadSequence('ngTable', 'paymentCtrl')
+            }).state('app.payment.list', {
+                url: '/list',
+                templateUrl: "index.php/payment/index",
+                title: 'List',
+                ncyBreadcrumb: {
+                    label: 'List'
+                },
+                resolve: loadSequence('ngTable', 'paymentCtrl')
+            }).state('app.payment.info', {
+                url: '/info?patment_id',
+                templateUrl: "index.php/payment/infopayment",
+                title: 'Info',
+                ncyBreadcrumb: {
+                    label: 'Info'
+                },
+                resolve: loadSequence('ngTable', 'paymentCtrl')
+            }).
+
+
+            state('app.waitercommission', {
                 url: '/waiterCommission',
                 template: '<div ui-view class="fade-in-up"></div>',
                 title: 'Waitercommission',

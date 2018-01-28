@@ -846,7 +846,7 @@ app.controller('orderCtrl', ["$scope", "$http", "$state", "$modal", "$window", "
 
     $scope.discount_type = $scope.discount_type_list[0];
 
-    var payment_type_list = [{
+    /*var payment_type_list = [{
         key: "1",
         value: "Cash"
     }, {
@@ -856,8 +856,21 @@ app.controller('orderCtrl', ["$scope", "$http", "$state", "$modal", "$window", "
         key: "3",
         value: "Debit Card"
     }];
-    $scope.payment_type_list = payment_type_list;
-    $scope.payment_type = payment_type_list[0];
+    $scope.payment_type_list = payment_type_list;*/
+
+    var request = $http({
+                    method: "post",
+                    url: "index.php/payment/getPaymentTypeForOrder",
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    }
+                });
+                request.success(function(response) {
+                    //console.log(response.payment_list);
+                    $scope.payment_type_list = response.payment_list;
+                    $scope.payment_type = response.payment_list[0];
+                });
+    
 
 
     // for use of parseFloat in expression
@@ -3227,7 +3240,7 @@ app.controller('orderCtrl', ["$scope", "$http", "$state", "$modal", "$window", "
         if ($rootScope.online == true) 
         {
             
-            console.log('order_id'+order_id);
+            //console.log('order_id'+order_id);
            // var order_id = $scope.order_id;
 
                 var modalInstance = $modal.open({
@@ -3265,7 +3278,7 @@ app.controller('orderCtrl', ["$scope", "$http", "$state", "$modal", "$window", "
 app.controller('PaymentModalInstanceCtrl', ["$scope", "$http", "$state", "$modalInstance", "$rootScope", "order_id",  function($scope, $http, $state, $modalInstance, $rootScope, order_id) {
 
     
-    var recent_payment_type_list = [{
+    /*var recent_payment_type_list = [{
             key: "1",
             value: "Cash"
         }, {
@@ -3277,8 +3290,23 @@ app.controller('PaymentModalInstanceCtrl', ["$scope", "$http", "$state", "$modal
         }, {
             key: "4",
             value: "Voucher"
-        }];
-    $scope.recent_payment_type_list = recent_payment_type_list;
+        }];*/
+        //console.log(recent_payment_type_list);
+
+    var request = $http({
+                    method: "post",
+                    url: "index.php/payment/getPaymentTypeForOrder",
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    }
+                });
+                request.success(function(response) {
+                    //console.log(response.payment_list);
+                    $scope.recent_payment_type_list = response.payment_list;
+                });
+
+    
+    //$scope.recent_payment_type_list = recent_payment_type_list;
     ///$scope.recent_payment_type = recent_payment_type_list[0];
 
     // for use of parseFloat in expression
@@ -3504,7 +3532,7 @@ app.controller('parcelOrderCtrl', ["$scope", "$http", "$state", "$modal", "$wind
 
     $scope.parcel_discount_type = $scope.parcel_discount_type_list[0];
 
-    var parcel_payment_type_list = [{
+    /*var parcel_payment_type_list = [{
         key: "1",
         value: "Cash"
     }, {
@@ -3513,9 +3541,24 @@ app.controller('parcelOrderCtrl', ["$scope", "$http", "$state", "$modal", "$wind
     }, {
         key: "3",
         value: "Debit Card"
-    }];
-    $scope.parcel_payment_type_list = parcel_payment_type_list;
-    $scope.parcel_payment_type = parcel_payment_type_list[0];
+    }];*/
+
+    var request = $http({
+                    method: "post",
+                    url: "index.php/payment/getPaymentTypeForOrder",
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    }
+                });
+                request.success(function(response) {
+                    //console.log(response.payment_list);
+                    $scope.parcel_payment_type_list = response.payment_list;
+                    $scope.parcel_payment_type = response.payment_list[0];
+                });
+
+
+    //$scope.parcel_payment_type_list = parcel_payment_type_list;
+    //$scope.parcel_payment_type = parcel_payment_type_list[0];
 
     // for use of parseFloat in expression
     $scope.parseFloat = parseFloat;
@@ -4640,7 +4683,7 @@ app.controller('deliveryOrderCtrl', ["$scope", "$http", "$state", "$modal", "$wi
 
     $scope.delivery_discount_type = $scope.delivery_discount_type_list[0];
 
-    var delivery_payment_type_list = [{
+    /*var delivery_payment_type_list = [{
         key: "1",
         value: "Cash"
     }, {
@@ -4650,8 +4693,22 @@ app.controller('deliveryOrderCtrl', ["$scope", "$http", "$state", "$modal", "$wi
         key: "3",
         value: "Debit Card"
     }];
-    $scope.delivery_payment_type_list = delivery_payment_type_list;
-    $scope.delivery_payment_type = delivery_payment_type_list[0];
+
+    $scope.delivery_payment_type_list = delivery_payment_type_list;*/
+
+    var request = $http({
+                    method: "post",
+                    url: "index.php/payment/getPaymentTypeForOrder",
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    }
+                });
+                request.success(function(response) {
+                    //console.log(response.payment_list);
+                    $scope.delivery_payment_type_list = response.payment_list;
+                    $scope.delivery_payment_type = response.payment_list[0];
+                });
+    //$scope.delivery_payment_type = delivery_payment_type_list[0];
 
     // for use of parseFloat in expression
     $scope.parseFloat = parseFloat;

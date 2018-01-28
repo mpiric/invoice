@@ -1119,11 +1119,12 @@ class Order_model extends CI_Model
                     WHEN (ROUND(o.total_amount)) = o.total_amount
                            THEN  ROUND(o.total_amount) - o.total_amount
                        end  AS roundoff_value,o.order_id,o.total_amount as bill_amount,  
-                ROUND(o.total_amount) as roundoff,case when order_type=1 then "Table order" when order_type=2 then "Delivery" when order_type=3 then "Parcel" end as orderType,CASE WHEN payment_type = 1 THEN "Cash" WHEN payment_type = 2 THEN "Credit Card" WHEN payment_type = 3 THEN "Debit Card" END AS paymentType,DATE_FORMAT(o.created, "%d-%m-%Y %H:%i") AS created ,b.brand_id,
+                ROUND(o.total_amount) as roundoff,case when order_type=1 then "Table order" when order_type=2 then "Delivery" when order_type=3 then "Parcel" end as orderType,p.payment_type AS paymentType,DATE_FORMAT(o.created, "%d-%m-%Y %H:%i") AS created ,b.brand_id,
                 (SELECT sum(quantity*price) from order_items where order_id=o.order_id) as sub_total, (SELECT SUM(quantity*price) FROM order_items WHERE order_id=o.order_id AND
                 ( o.order_type=2 )) AS tax_free , ((SELECT sum(quantity*price) from order_items where order_id=o.order_id) * o.discount_amount/100) as discount,o.sub_total,o.order_code, o.number_of_person, (SELECT table_number FROM table_detail WHERE table_detail_id = o.table_detail_id) AS table_no
                 FROM order_detail o
                 left join branch b on b.branch_id = o.branch_id
+                left join payment_type p on p.payment_id = o.payment_type
                 WHERE o.is_print=1
                 order by ABS(o.order_code) desc limit 50');
             
@@ -1138,10 +1139,11 @@ class Order_model extends CI_Model
                     WHEN (ROUND(o.total_amount)) = o.total_amount
                            THEN  ROUND(o.total_amount) - o.total_amount
                        end  AS roundoff_value,o.order_id,o.total_amount as bill_amount,  
-                ROUND(o.total_amount) as roundoff,case when order_type=1 then "Table order" when order_type=2 then "Delivery" when order_type=3 then "Parcel" end as orderType,CASE WHEN payment_type = 1 THEN "Cash" WHEN payment_type = 2 THEN "Credit Card" WHEN payment_type = 3 THEN "Debit Card" END AS paymentType,DATE_FORMAT(o.created, "%d-%m-%Y %H:%i") AS created,b.brand_id,
+                ROUND(o.total_amount) as roundoff,case when order_type=1 then "Table order" when order_type=2 then "Delivery" when order_type=3 then "Parcel" end as orderType,p.payment_type AS paymentType,DATE_FORMAT(o.created, "%d-%m-%Y %H:%i") AS created,b.brand_id,
                 (SELECT sum(quantity*price) from order_items where order_id=o.order_id) as sub_total, (SELECT SUM(quantity*price) FROM order_items WHERE order_id=o.order_id AND ( o.order_type=2 )) AS tax_free , ((SELECT sum(quantity*price) from order_items where order_id=o.order_id) * o.discount_amount/100) as discount,o.sub_total,o.order_code, o.number_of_person, (SELECT table_number FROM table_detail WHERE table_detail_id = o.table_detail_id) AS table_no
                 FROM order_detail o
                 left join branch b on b.branch_id = o.branch_id 
+                left join payment_type p on p.payment_id = o.payment_type
                 where o.branch_id= "' . $branch_id . '" AND o.is_print=1
                 order by ABS(o.order_code) desc limit 50');
             
