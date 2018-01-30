@@ -792,9 +792,7 @@ class Order extends CI_Controller
             // {
             $updateData                    = array();
             $updateData['order_code']      = $latest_printed_bill_code;
-            $updateData['order_date_time'] = date("Y-m-d H:i:s");
-            $updateData['updated'] = date("Y-m-d H:i:s");
-            //$updateData['is_print'] = 1;
+            
             $this->order_model->update_order_data_by_id($updateData, $order_id);
             //}
             
@@ -862,6 +860,8 @@ class Order extends CI_Controller
                     } else {
                         $bs_tax_str .= '<tr><td colspan="4">' . $bs_tax["tax_name"] . ' @ ' . $bs_tax["tax_percent"] . '%</td><td align="right">' . $tax_value . '</td></tr>';
                     }
+
+                    $this->order_model->check_order_tax($bs_tax, $order_id);
                 }
             }
             // reduce discount from total amount
@@ -878,7 +878,14 @@ class Order extends CI_Controller
             } else {
                 $response['grand_total'] = $grand_total;
             }
-            
+
+            $finalUpdate = array();
+            $finalUpdate['sub_total'] = $invoice_total;
+            $finalUpdate['total_amount'] = $response['grand_total'];
+            $finalUpdate['round_off_total_amount'] = round($response['grand_total']);
+            $finalUpdate['updated'] = date("Y-m-d H:i:s");
+            //$updateData['is_print'] = 1;
+            $this->order_model->update_order_data_by_id($finalUpdate, $order_id);
             
             
             // get branch details 

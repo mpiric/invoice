@@ -304,7 +304,7 @@ WHERE branch_id=$branch_id AND t.`tax_id` = 0 AND t.order_type=1 AND t.deleted I
         $cond = "AND branch_id='".$branch_id."'";
       }
 
-      $query = $this->db->query("SELECT t.tax_master_id,tax_percent,tm.`tax_name`,tm.tax_id FROM `tax_master` t
+      $query = $this->db->query("SELECT t.tax_master_id,t.tax_percent,tm.`tax_name`,tm.tax_id,t.branch_tax_id FROM `tax_master` t
                                   JOIN `tax_main` tm ON (t.`branch_tax_id` = tm.`tax_id`) AND tm.`tax_type`= 2
                                   WHERE  t.`tax_id` = 0 AND t.order_type='".$order_type."' AND t.deleted IS NULL ".$cond." GROUP BY t.`branch_tax_id` ");
 

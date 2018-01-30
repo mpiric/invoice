@@ -2148,6 +2148,33 @@ CASE WHEN payment_type = 1 THEN "Cash" WHEN payment_type = 2 THEN "Credit Card" 
         $result = $query->row_array();
         return $result;
     }
+
+    function check_order_tax($tax, $order_id){
+        $query = $this->db->select('order_tax_id')
+                        ->from('order_tax')
+                        ->where(array("order_id"=>$order_id, "tax_id"=>$tax['branch_tax_id']))
+                        ->get();
+        $count = $query->num_rows();
+        $data = array();
+        if($count==0){
+            //insert
+            $data['order_id'] = $order_id;
+            $data['tax_id'] = $tax['branch_tax_id'];
+            $data['tax_percent'] = $tax['tax_percent'];
+
+            $this->db->insert('order_tax', $data);
+        } else {
+            //update
+            $data['tax_percent'] = $tax['tax_percent'];
+            $this->db->where(array("order_id"=>$order_id, "tax_id"=>$tax['branch_tax_id']));
+            $this->db->update('order_tax', $data);
+        }
+    }
+
+
+
+
+
 }
 
 ?>
