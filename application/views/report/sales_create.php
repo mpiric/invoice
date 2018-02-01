@@ -100,18 +100,26 @@
 					            <!-- <td class="hidden-xs" >{{row.totalTax}}</td> -->
 					            <td class="hideen-xs" align="left">{{row.sub_total}}</td>
 					            <!-- <td class="hideen-xs" align="left">{{row.tax_free}}</td> -->
-					            <td class="hideen-xs" >{{row.orderType }}</td>
+					            
+					            
+					            <!-- order type -->
+					            <td class="hideen-xs" ng-if="row.orderType === '1'">Table order</td>
+					            <td class="hideen-xs" ng-if="row.orderType === '2'">Delivery</td>
+					            <td class="hideen-xs" ng-if="row.orderType === '3'">Parcel</td>
+					            <!-- end of order type -->
+
+
 					            <td class="hideen-xs" >{{row.paymentType}}</td>
 					            <td class="hideen-xs" ng-show="row.paymentType=='Credit Card'" >{{row.roundoff | number:2}}</td>
 					            <td class="hideen-xs" ng-show="row.paymentType!='Credit Card'"></td>
 					            
-					            <td class="hideen-xs" align="left">{{row.discount | number:2}}</td>
+					            <td class="hideen-xs" align="left">{{(row.sub_total * row.discount / 100) | number:2}}</td>
 					            <td class="hidden-xs" ng-repeat="th in tax_list_all" align="left">
 							        {{ (row.order_tax[th.tax_id]).tax_amount | number:2}}
 							    </td>
 
 					            <td class="hidden-xs" align="left">{{row.bill_amount | number:2}}</td>
-					            <td class="hidden-xs" align="left">{{row.roundoff_value | number:2}}</td>
+					            <td class="hidden-xs" align="left">{{ ( row.roundoff - row.bill_amount ) | number:2}}</td>
 					            <td class="hidden-xs" align="left">{{row.roundoff | number:2}}</td>
 					            
 

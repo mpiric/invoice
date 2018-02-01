@@ -1111,7 +1111,7 @@ class Order_model extends CI_Model
         // (select sum(otx.tax_percent) from order_detail sod left join order_tax otx on (sod.order_id = otx.order_id) where sod.order_id=o.order_id ) as totalTax,(o.sub_total * o.discount_amount/100) as discount,
         
         if ($session_data['branch_type'] == 1) {
-            $query = $this->db->query(' SELECT  CASE 
+            /*$query = $this->db->query(' SELECT  CASE 
                     WHEN (ROUND(o.total_amount)) < o.total_amount 
                            THEN ROUND(o.total_amount) - o.total_amount
                     WHEN (ROUND(o.total_amount)) > o.total_amount
@@ -1126,12 +1126,21 @@ class Order_model extends CI_Model
                 left join branch b on b.branch_id = o.branch_id
                 left join payment_type p on p.payment_id = o.payment_type
                 WHERE o.is_print=1
+                order by ABS(o.order_code) desc limit 50');*/
+
+            $query = $this->db->query('SELECT o.order_id,o.total_amount as bill_amount,  
+                ROUND(o.total_amount) as roundoff,o.order_type as orderType,p.payment_type AS paymentType,DATE_FORMAT(o.created, "%d-%m-%Y %H:%i") AS created,b.brand_id, o.discount_amount as discount,o.sub_total,o.order_code, o.number_of_person, td.table_number AS table_no
+                FROM order_detail o
+                left join branch b on b.branch_id = o.branch_id 
+                left join payment_type p on p.payment_id = o.payment_type
+                left join table_detail td on td.table_detail_id = o.table_detail_id
+                where o.is_print=1
                 order by ABS(o.order_code) desc limit 50');
             
             // (SELECT SUM(quantity*price) FROM order_items WHERE order_id=o.order_id AND ( o.order_type=2 OR o.order_type=3 )) AS tax_free ,
             
         } else {
-            $query = $this->db->query(' SELECT  CASE 
+            /*$query = $this->db->query(' SELECT  CASE 
                     WHEN (ROUND(o.total_amount)) < o.total_amount 
                            THEN ROUND(o.total_amount) - o.total_amount
                     WHEN (ROUND(o.total_amount)) > o.total_amount
@@ -1144,6 +1153,15 @@ class Order_model extends CI_Model
                 FROM order_detail o
                 left join branch b on b.branch_id = o.branch_id 
                 left join payment_type p on p.payment_id = o.payment_type
+                where o.branch_id= "' . $branch_id . '" AND o.is_print=1
+                order by ABS(o.order_code) desc limit 50'); */
+
+            $query = $this->db->query(' SELECT o.order_id,o.total_amount as bill_amount,  
+                ROUND(o.total_amount) as roundoff,o.order_type as orderType,p.payment_type AS paymentType,DATE_FORMAT(o.created, "%d-%m-%Y %H:%i") AS created,b.brand_id, o.discount_amount as discount,o.sub_total,o.order_code, o.number_of_person, td.table_number AS table_no
+                FROM order_detail o
+                left join branch b on b.branch_id = o.branch_id 
+                left join payment_type p on p.payment_id = o.payment_type
+                left join table_detail td on td.table_detail_id = o.table_detail_id
                 where o.branch_id= "' . $branch_id . '" AND o.is_print=1
                 order by ABS(o.order_code) desc limit 50');
             
@@ -1176,7 +1194,7 @@ class Order_model extends CI_Model
             }
         }
         
-        $select = 'SELECT  CASE  
+        /*$select = 'SELECT  CASE  
                     WHEN (ROUND(o.total_amount)) < o.total_amount 
                            THEN ROUND(o.total_amount) - o.total_amount
                     WHEN (ROUND(o.total_amount)) > o.total_amount
@@ -1188,7 +1206,15 @@ class Order_model extends CI_Model
                 (select sum(otx.tax_percent) from order_detail sod left join order_tax otx on (sod.order_id = otx.order_id) where sod.order_id=o.order_id ) as totalTax,o.order_code, o.number_of_person, (SELECT table_number FROM table_detail WHERE table_detail_id = o.table_detail_id) AS table_no
                 FROM order_detail o
                 left join branch b on b.branch_id = o.branch_id 
-                where o.branch_id ="' . $branch_id . '" AND o.is_print=1  ';
+                where o.branch_id ="' . $branch_id . '" AND o.is_print=1  ';*/
+
+        $select = 'SELECT o.order_id,o.total_amount as bill_amount,  
+                ROUND(o.total_amount) as roundoff,o.order_type as orderType,p.payment_type AS paymentType,DATE_FORMAT(o.created, "%d-%m-%Y %H:%i") AS created,b.brand_id, o.discount_amount as discount,o.sub_total,o.order_code, o.number_of_person, td.table_number AS table_no
+                FROM order_detail o
+                left join branch b on b.branch_id = o.branch_id 
+                left join payment_type p on p.payment_id = o.payment_type
+                left join table_detail td on td.table_detail_id = o.table_detail_id
+                where o.branch_id ="' . $branch_id . '" AND o.is_print=1 ';
         
         // (SELECT SUM(quantity*price) FROM order_items WHERE order_id=o.order_id AND ( o.order_type=2 OR o.order_type=3 )) AS tax_free
         
@@ -1208,7 +1234,7 @@ class Order_model extends CI_Model
         $session_data = $this->session->userdata('logged_in');
         if ($session_data['branch_type'] == 1) {
             if ($branch_id == '' && $fromdate == "" && $todate == "") {
-                $select = 'SELECT  CASE  
+                /*$select = 'SELECT  CASE  
                     WHEN (ROUND(o.total_amount)) < o.total_amount 
                            THEN ROUND(o.total_amount) - o.total_amount
                     WHEN (ROUND(o.total_amount)) > o.total_amount
@@ -1221,7 +1247,16 @@ class Order_model extends CI_Model
                 FROM order_detail o
                 left join branch b on b.branch_id = o.branch_id 
                 WHERE o.is_print=1
-                order by ABS(o.order_code) desc ';
+                order by ABS(o.order_code) desc '; */
+
+                $select = 'SELECT o.order_id,o.total_amount as bill_amount,  
+                ROUND(o.total_amount) as roundoff,o.order_type as orderType,p.payment_type AS paymentType,DATE_FORMAT(o.created, "%d-%m-%Y %H:%i") AS created,b.brand_id, o.discount_amount as discount,o.sub_total,o.order_code, o.number_of_person, td.table_number AS table_no
+                FROM order_detail o
+                left join branch b on b.branch_id = o.branch_id 
+                left join payment_type p on p.payment_id = o.payment_type
+                left join table_detail td on td.table_detail_id = o.table_detail_id
+                where o.is_print=1 ';
+
             }
         } else {
             $select = $select;

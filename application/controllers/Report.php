@@ -400,7 +400,7 @@ class Report extends CI_Controller
             }
             $order_data['bill_amount']    = (float) ($order_data['sub_total']) + $taxSum - ((float) ($order_data['discount']));
             $order_data['roundoff']       = round((float) ($order_data['bill_amount']));
-            $order_data['roundoff_value'] = number_format(($order_data['roundoff'] - (float) ($order_data['bill_amount'])), 2);
+            //$order_data['roundoff_value'] = number_format(($order_data['roundoff'] - (float) ($order_data['bill_amount'])), 2);
             
             $details[$i] = $order_data;
             

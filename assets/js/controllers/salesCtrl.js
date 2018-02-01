@@ -22,6 +22,7 @@ app.controller('salesCtrl', ["$scope", "$http", "$state","$log","Excel","$timeou
 
 	$scope.saleslist = [];
   $scope.adminBranch=false;
+  $scope.Math = window.Math;
 
   $scope.today = function () {
         $scope.dt = new Date();
@@ -462,8 +463,9 @@ app.controller('salesCtrl', ["$scope", "$http", "$state","$log","Excel","$timeou
       for(var i = 0; i < $scope.saleslist.length; i++){
              
               var order = $scope.saleslist[i];
+              var roundoff_value = order.roundoff - order.bill_amount ;
             
-              final_total += parseFloat(order.roundoff_value!=null ? order.roundoff_value : 0);
+              final_total += parseFloat(roundoff_value!=null ? roundoff_value : 0);
 
               //console.log(parseFloat(order.roundoff_value));
               
