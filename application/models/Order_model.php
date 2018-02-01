@@ -2171,6 +2171,15 @@ CASE WHEN payment_type = 1 THEN "Cash" WHEN payment_type = 2 THEN "Credit Card" 
         }
     }
 
+    public function getBillCountByBranchId($branch_id, $fromdate, $todate){
+
+        $sql = "SELECT COUNT(*) as bill_count FROM order_detail WHERE branch_id = '".$branch_id."' AND DATE(order_date_time) >= '".$fromdate."' AND DATE(order_date_time) <= '".$todate."' AND is_print = '1' ";
+        $query = $this->db->query($sql);
+
+        $result = $query->row_array();
+        return $result['bill_count'];
+    }
+
 
 
 
