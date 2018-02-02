@@ -506,7 +506,7 @@ class Order_model extends CI_Model
         
         // check before insert
         // if order_id is available in table data
-        
+
         $order_item_row = $this->getDetailsByOrderAndProduct($data['order_id'], $data['product_id']);
         if (!empty($order_item_row) && false) {
             

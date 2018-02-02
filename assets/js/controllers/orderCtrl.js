@@ -3835,6 +3835,7 @@ app.controller('parcelOrderCtrl', ["$scope", "$http", "$state", "$modal", "$wind
                         $scope.$broadcast('parcel_order_focus');
 
                         $scope.parcel_order_id = response.order_id;
+                        //console.log($scope.parcel_order_id +' : '+ response.order_id);
 
                         // order items
                         var request = $http({
@@ -4434,7 +4435,7 @@ app.controller('parcelOrderCtrl', ["$scope", "$http", "$state", "$modal", "$wind
                     });
 
                     request.success(function(response) {
-
+                        console.log(response);
                         if (response.status) {
                             if (response.status == "1") {
                                 //success

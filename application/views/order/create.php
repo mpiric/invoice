@@ -29,7 +29,7 @@
                                         <td><span class="btn btn-primary btn-xs"><b>{{row.table_number}}</b></span></td>
                                         <!-- <td>{{row.order_code}}</td> -->
                                         <!-- <td>{{row.total_amount==0 ? '' : row.total_amount.toFixed(2)}}</td> -->
-                                        <td>{{row.total_amount}}</td>
+                                        <td>{{row.total_amount }}</td>
                                     </tr>
                                 </tbody>
                             </table>

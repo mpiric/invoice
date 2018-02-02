@@ -149,10 +149,11 @@ class Order extends CI_Controller
             // }
             
             $_POST['order_id'] = $result;
+
             $result_live       = $this->order_model->insert_into_order_live($_POST);
             
             
-            if ($result > 0 && $result_live == TRUE) {
+            if ($result > 0 ) {
                 $response['status']   = "1";
                 $response['data']     = "Order created successfully";
                 $response['order_id'] = $result;
@@ -578,11 +579,10 @@ class Order extends CI_Controller
     {
         $response = array();
         
-        if (isset($_POST['order_code']) && $_POST['order_code'] != '' && !empty($_POST['brand_id'])) {
+        if (isset($_POST['order_code']) && $_POST['order_code'] != '') {
             $order_code = $_POST['order_code'];
-            $brand_id   = $_POST['brand_id'];
             
-            $result = $this->order_model->check_for_previous_order($order_code, $brand_id);
+            $result = $this->order_model->check_for_previous_order($order_code);
             
             if ($result == true) {
                 $response['status'] = "1";
@@ -848,10 +848,12 @@ class Order extends CI_Controller
             
             $bs_tax_str = '';
             if (!empty($branch_specific_taxes)) {
+
+                $subTotalDiscount = $invoice_total - (($invoice_total * $order_details['discount_amount']) / 100) ; 
                 
                 foreach ($branch_specific_taxes as $bs_tax) {
                     
-                    $tax_value = number_format((float) ($invoice_total * $bs_tax["tax_percent"]) / 100, 2, '.', '');
+                    $tax_value = number_format((float) ($subTotalDiscount * $bs_tax["tax_percent"]) / 100, 2, '.', '');
                     
                     $grand_total += $tax_value;
                     
@@ -912,7 +914,7 @@ class Order extends CI_Controller
         if (isset($_POST['order_id']) && $_POST['order_id'] != '') {
             
             // get next bill
-            $next_bill_id = $this->order_model->get_next_bill_code();
+            //$next_bill_id = $this->order_model->get_next_bill_code();
             
             
             // compare the order_code with the existing latest printed bill code
@@ -936,7 +938,7 @@ class Order extends CI_Controller
             // if the order is complementary - discount_type 
             
             // then update branch code
-            $this->order_model->update_branch_code();
+            //$this->order_model->update_branch_code();
             
             $response['status'] = "1";
             $response['data']   = $order_details;
