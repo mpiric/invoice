@@ -164,10 +164,20 @@ app.controller('salesCtrl', ["$scope", "$http", "$state","$log","Excel","$timeou
                       
                             
                             //console.log($scope.waiter_list);  
+                            //console.log(response);
 
                            // $scope.saleslist = response.data;  
 
                             var salesData = response.data;
+                            $scope.saleslist = salesData;  
+
+                            $scope.getTotalCover = response.getTotalCover;
+                            $scope.getSubtotal = response.getSubtotal;
+                            $scope.gettotalDiscountTotal = response.gettotalDiscountTotal;
+                            $scope.getbill_amountTotal = response.getbill_amountTotal;
+                            $scope.getRound = response.getRound;
+                            $scope.getroundoffTotal = response.getroundoffTotal;
+                            $scope.paymentData = response.paymentData;
 
                             // angular.forEach(salesData, function(value, key) {
 
@@ -185,7 +195,7 @@ app.controller('salesCtrl', ["$scope", "$http", "$state","$log","Excel","$timeou
 
                             // });
 
-                            $scope.saleslist = salesData;  
+
 
                             // angular.forEach($scope.saleslist, function(value2, key2){
 
@@ -247,8 +257,16 @@ app.controller('salesCtrl', ["$scope", "$http", "$state","$log","Excel","$timeou
                       });
 
                   request.success(function (response) {
-
+console.log(response);
                       var salesData = response.data;
+                      $scope.saleslist = salesData;  
+                      $scope.getTotalCover = response.getTotalCover;
+                      $scope.getSubtotal = response.getSubtotal;
+                      $scope.gettotalDiscountTotal = response.gettotalDiscountTotal;
+                      $scope.getbill_amountTotal = response.getbill_amountTotal;
+                      $scope.getRound = response.getRound;
+                      $scope.getroundoffTotal = response.getroundoffTotal;
+                      $scope.paymentData = response.paymentData;
 
                       angular.element("#pdf_loader").hide();
 
@@ -268,7 +286,7 @@ app.controller('salesCtrl', ["$scope", "$http", "$state","$log","Excel","$timeou
 
                             // });
 
-                            $scope.saleslist = salesData;  
+                            //$scope.saleslist = salesData;  
 
                             // angular.forEach($scope.saleslist, function(value2, key2){
 

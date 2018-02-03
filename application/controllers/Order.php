@@ -847,6 +847,7 @@ class Order extends CI_Controller
             //echo'<pre>';print_r($branch_specific_taxes);die;
             
             $bs_tax_str = '';
+            $total_tax = 0;
             if (!empty($branch_specific_taxes)) {
 
                 $subTotalDiscount = $invoice_total - (($invoice_total * $order_details['discount_amount']) / 100) ; 
@@ -855,7 +856,8 @@ class Order extends CI_Controller
                     
                     $tax_value = number_format((float) ($subTotalDiscount * $bs_tax["tax_percent"]) / 100, 2, '.', '');
                     
-                    $grand_total += $tax_value;
+                    $total_tax += $tax_value;
+
                     
                     if ($order_details['discount_type'] == 1) {
                         $bs_tax_str .= '<tr><td colspan="4">' . $bs_tax["tax_name"] . ' @ ' . $bs_tax["tax_percent"] . '%</td><td align="right">0</td></tr>';
@@ -866,12 +868,20 @@ class Order extends CI_Controller
                     $this->order_model->check_order_tax($bs_tax, $order_id);
                 }
             }
+
+            //ADD tax in total
+            //$grand_total += $tax_value;
+
             // reduce discount from total amount
             
             $response['branch_specific_taxes'] = $bs_tax_str;
             
-            if (intVal($order_details['discount_amount']) != 0 && $order_details['discount_amount'] != '') {
-                $grand_total = $grand_total - (($grand_total * $order_details['discount_amount']) / 100);
+            if(intVal($order_details['discount_amount'])!=0 && $order_details['discount_amount']!='')
+            {
+                //$grand_total = $grand_total-(($grand_total*$order_details['discount_amount'])/100);
+                $grand_total = $subTotalDiscount + $total_tax;
+            } else {
+                $grand_total += $total_tax;
             }
             
             if ($order_details['discount_type'] == 1) {

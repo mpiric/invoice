@@ -81,7 +81,7 @@
 					            <!-- <th class="hidden-xs" align="center">Tax free</th> -->
 					            <th class="hidden-xs" align="center">Order Type</th>
 					            <th class="hidden-xs" align="center">Payment Type</th>
-					            <th class="hidden-xs" align="center">Credit Card</th>
+					            
 					            <th class="hidden-xs" align="center">Discount</th>
 					            <th ng-repeat="column in tax_list_all" class="hidden-xs" align="center">{{column.tax_name}}({{column.tax_percent}}%)</th>
 					            <th class="hidden-xs" align="center">Bill Amount</th>
@@ -98,29 +98,26 @@
 							  <td class="hidden-xs" align="left">{{row.table_no}}</td>
 							  <td class="hidden-xs" align="left">{{row.number_of_person}}</td>
 					            <!-- <td class="hidden-xs" >{{row.totalTax}}</td> -->
-					            <td class="hideen-xs" align="left">{{row.sub_total}}</td>
+					            <td class="hideen-xs" align="right">{{row.sub_total}}</td>
 					            <!-- <td class="hideen-xs" align="left">{{row.tax_free}}</td> -->
 					            
 					            
 					            <!-- order type -->
-					            <td class="hideen-xs" ng-if="row.orderType === '1'">Table order</td>
-					            <td class="hideen-xs" ng-if="row.orderType === '2'">Delivery</td>
-					            <td class="hideen-xs" ng-if="row.orderType === '3'">Parcel</td>
+					            <td class="hideen-xs" ">{{ row.orderType }}</td>
 					            <!-- end of order type -->
 
 
 					            <td class="hideen-xs" >{{row.paymentType}}</td>
-					            <td class="hideen-xs" ng-show="row.paymentType=='Credit Card'" >{{row.roundoff | number:2}}</td>
-					            <td class="hideen-xs" ng-show="row.paymentType!='Credit Card'"></td>
 					            
-					            <td class="hideen-xs" align="left">{{(row.sub_total * row.discount / 100) | number:2}}</td>
-					            <td class="hidden-xs" ng-repeat="th in tax_list_all" align="left">
+					            
+					            <td class="hideen-xs" align="right">{{ row.discount | number:2}}</td>
+					            <td class="hidden-xs" ng-repeat="th in tax_list_all" align="right">
 							        {{ (row.order_tax[th.tax_id]).tax_amount | number:2}}
 							    </td>
 
-					            <td class="hidden-xs" align="left">{{row.bill_amount | number:2}}</td>
-					            <td class="hidden-xs" align="left">{{ ( row.roundoff - row.bill_amount ) | number:2}}</td>
-					            <td class="hidden-xs" align="left">{{row.roundoff | number:2}}</td>
+					            <td class="hidden-xs" align="right">{{row.bill_amount | number:2}}</td>
+					            <td class="hidden-xs" align="right">{{ ( row.roundoff_value ) | number:2}}</td>
+					            <td class="hidden-xs" align="right">{{row.total | number:2}}</td>
 					            
 
 					          </tr>
@@ -130,19 +127,19 @@
 					          	<td></td>
 								
 								<td></td>
-								<td align="left"><b>{{getTotalCover() }}</b></td>
-								<td align="left"><b>{{ getSubtotal().toFixed(2)}}</b></td>
+								<td align="left"><b>{{ getTotalCover }}</b></td>
+								<td align="right"><b>{{ getSubtotal | number:2 }}</b></td>
 					          	<!-- <td align="left"><b>{{ getTaxfreetotal().toFixed(2)}}</b></td> -->
 					          	<td></td>
 					          	<td></td>
 
 					          	<!-- id="subTotalTd" -->
 
-					          	<td class="hideen-xs" ><b>{{getcreditcardTotal().toFixed(2)}}</b></td>
+					          	
 
-					          	<td  align="left"><b>{{ gettotalDiscountTotal().toFixed(2)}}</b></td>
+					          	<td  align="right"><b>{{ gettotalDiscountTotal | number:2 }}</b></td>
 
-					          	 <td class="hidden-xs" ng-repeat="th in tax_list_all" align="left">
+					          	 <td class="hidden-xs" ng-repeat="th in tax_list_all" align="right">
 							        <!-- {{ (row.order_tax[th.tax_id]).tax_amount}} -->
 							        <!-- {{th.tax_id}} -->
 							        <b>{{ gettotalTaxAmount(th.tax_id) | number:2}}</b>
@@ -150,13 +147,20 @@
 
 					          		<!-- {{insTd()}} -->
 
-					          	<td align="left"><b>{{ getbill_amountTotal().toFixed(2) }}</b></td>
+					          	<td align="right"><b>{{ getbill_amountTotal | number:2 }}</b></td>
 					          	
-					          	<td align="left"><b>{{ getRound().toFixed(2) }}</b></td>
+					          	<td align="right"><b>{{ getRound | number:2 }}</b></td>
 
 
-					          	<td align="left"><b>{{ getroundoffTotal().toFixed(2) }}</b></td>
+					          	<td align="right"><b>{{ getroundoffTotal | number:2 }}</b></td>
 					          	<td></td>
+					          </tr>
+
+					          <tr> <td colspan="13">&nbsp;</td></tr>
+
+					          <tr ng-repeat="payment in paymentData">
+					          	<td align="right" colspan="11"> <b>{{ payment.name }}:</b> </td>
+					          	<td align="right" colspan="2"> <b>{{ payment.value | number:2 }}</b> </td>
 					          </tr>
 					        </tbody>
 					        </table>

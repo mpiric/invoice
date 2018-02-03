@@ -42,15 +42,29 @@ class Report extends CI_Controller
     {
         $this->load->model('order_model');
         $this->load->model('tax_main_model');
+        $this->load->model('payment_model');
         
         $tax_name = $this->tax_main_model->tax_list_all();
         
         $result = $this->order_model->sales_report_all();
-        
+
+        $paymentTypeData = $this->payment_model->get_data();
+
+        foreach ($paymentTypeData as $payment) {
+            
+            $paymentData[$payment['payment_id']] = array(
+                                                        "name"=>$payment['payment_type'],
+                                                        "id" => $payment['payment_id'],
+                                                        "value" => 0
+                                                    ); 
+            
+        }
+
         
         $details = array();
         
         $i = 0;
+        $getTotalCover = $getSubtotal = $gettotalDiscountTotal = $getbill_amountTotal = $getRound = $getroundoffTotal = 0;
         foreach ($result as $order_data) {
             
             //print_r($order_data);die;
@@ -74,9 +88,7 @@ class Report extends CI_Controller
             foreach ($order_tax_data as $tax_data) {
                 $order_tax_list[$tax_data['tax_id']] = $tax_data;
             }
-            
-            
-            
+
             $taxSum = 0;
             
             $order_tax = $order_tax_data;
@@ -93,24 +105,66 @@ class Report extends CI_Controller
                 }
                 
             }
+
             
-            $order_data['bill_amount']    = (float) ($order_data['sub_total']) + $taxSum - ((float) ($order_data['discount']));
-            $order_data['roundoff']       = round((float) ($order_data['bill_amount']));
-            $order_data['roundoff_value'] = number_format(($order_data['roundoff'] - (float) ($order_data['bill_amount'])), 2);
+            $data['order_id'] = $order_data['order_id'];
+            $data['created'] = $order_data['created'];
+            $data['order_code'] = $order_data['order_code'];
+            $data['table_no'] = $order_data['table_no'];
+            $data['number_of_person'] = $order_data['number_of_person'];
+            $data['sub_total'] = $order_data['sub_total'];
+            if($order_data['orderType'] == 1){
+                $data['orderType'] = "Table Order";
+            } else if($order_data['orderType'] == 2){
+                $data['orderType'] = "Delivery";
+            } else {
+                $data['orderType'] = "Parcel";
+            }
+            $data['paymentType'] = $order_data['paymentType'];
+            $data['discount'] = ($order_data['sub_total'] * $order_data['discount']) / 100;
+            $data['bill_amount'] = $order_data['bill_amount'];
             
-            $details[$i] = $order_data;
+            $data['total']       = round((float) ($order_data['bill_amount']));
+            $data['roundoff_value'] = $data['total'] - ($data['bill_amount']);
+            
+            $details[$i] = $data;
             
             $details[$i]['order_tax'] = $order_tax_list;
+
+            $getTotalCover += $data['number_of_person'];
+            $getSubtotal += $data['sub_total'];
+            $gettotalDiscountTotal += $data['discount'];
+            $getbill_amountTotal += $data['bill_amount'];
+            $getRound += $data['roundoff_value'];
+            $getroundoffTotal += $data['total'];
+
+            foreach ($paymentTypeData as $payment) {
+                # code...
+                if($order_data['payment_id'] == $payment['payment_id']){
+                    $paymentData[$payment['payment_id']]["value"] += $data['total'];
+                }
+                
+            }
             
             //$result['order_tax'] = $order_tax_list;
             $i++;
         }
+
         $response           = array();
         $response['status'] = "1";
         $response['data']   = $details;
+        $response['getTotalCover'] += $getTotalCover;
+        $response['getSubtotal'] += $getSubtotal;
+        $response['gettotalDiscountTotal'] += $gettotalDiscountTotal;
+        $response['getbill_amountTotal'] += $getbill_amountTotal;
+        $response['getRound'] += $getRound;
+        $response['getroundoffTotal'] += $getroundoffTotal;
+        $response['paymentData'] = $paymentData;
         echo json_encode($response);
         die;
     }
+
+
     public function branch_report_all()
     {
         $this->load->model('order_model');
@@ -327,6 +381,9 @@ class Report extends CI_Controller
     {
         $this->load->view('report/sales_create');
     }
+
+
+    
     public function report_sales()
     {
         //echo'<pre>';print_r($_POST);die;
@@ -360,14 +417,27 @@ class Report extends CI_Controller
         
         $this->load->model('order_model');
         $this->load->model('tax_main_model');
+        $this->load->model('payment_model');
         
         $tax_name = $this->tax_main_model->tax_list_all();
         
         $result = $this->order_model->sales_report($branch_id, $fromdate, $todate);
+        $paymentTypeData = $this->payment_model->get_data();
+
+        foreach ($paymentTypeData as $payment) {
+            
+            $paymentData[$payment['payment_id']] = array(
+                                                        "name"=>$payment['payment_type'],
+                                                        "id" => $payment['payment_id'],
+                                                        "value" => 0
+                                                    ); 
+            
+        }
         
         $details = array();
         
         $i = 0;
+        $getTotalCover = $getSubtotal = $gettotalDiscountTotal = $getbill_amountTotal = $getRound = $getroundoffTotal = 0;
         foreach ($result as $order_data) {
             
             //print_r($order_data);die;
@@ -398,20 +468,57 @@ class Report extends CI_Controller
                 }
                 
             }
-            $order_data['bill_amount']    = (float) ($order_data['sub_total']) + $taxSum - ((float) ($order_data['discount']));
-            $order_data['roundoff']       = round((float) ($order_data['bill_amount']));
-            //$order_data['roundoff_value'] = number_format(($order_data['roundoff'] - (float) ($order_data['bill_amount'])), 2);
+            $data['order_id'] = $order_data['order_id'];
+            $data['created'] = $order_data['created'];
+            $data['order_code'] = $order_data['order_code'];
+            $data['table_no'] = $order_data['table_no'];
+            $data['number_of_person'] = $order_data['number_of_person'];
+            $data['sub_total'] = $order_data['sub_total'];
+            if($order_data['orderType'] == 1){
+                $data['orderType'] = "Table Order";
+            } else if($order_data['orderType'] == 2){
+                $data['orderType'] = "Delivery";
+            } else {
+                $data['orderType'] = "Parcel";
+            }
+            $data['paymentType'] = $order_data['paymentType'];
+            $data['discount'] = ($order_data['sub_total'] * $order_data['discount']) / 100;
+            $data['bill_amount'] = $order_data['bill_amount'];
             
-            $details[$i] = $order_data;
+            $data['total']       = round((float) ($order_data['bill_amount']));
+            $data['roundoff_value'] = $data['total'] - ($data['bill_amount']);
+            
+            $details[$i] = $data;
             
             $details[$i]['order_tax'] = $order_tax_list;
-            
-            //$result['order_tax'] = $order_tax_list;
+
+            $getTotalCover += $data['number_of_person'];
+            $getSubtotal += $data['sub_total'];
+            $gettotalDiscountTotal += $data['discount'];
+            $getbill_amountTotal += $data['bill_amount'];
+            $getRound += $data['roundoff_value'];
+            $getroundoffTotal += $data['total'];
+
+            foreach ($paymentTypeData as $payment) {
+                # code...
+                if($order_data['payment_id'] == $payment['payment_id']){
+                    $paymentData[$payment['payment_id']]["value"] += $data['total'];
+                }
+                
+            }
+
             $i++;
         }
         $response           = array();
         $response['status'] = "1";
         $response['data']   = $details;
+        $response['getTotalCover'] += $getTotalCover;
+        $response['getSubtotal'] += $getSubtotal;
+        $response['gettotalDiscountTotal'] += $gettotalDiscountTotal;
+        $response['getbill_amountTotal'] += $getbill_amountTotal;
+        $response['getRound'] += $getRound;
+        $response['getroundoffTotal'] += $getroundoffTotal;
+        $response['paymentData'] = $paymentData;
         echo json_encode($response);
         die;
         

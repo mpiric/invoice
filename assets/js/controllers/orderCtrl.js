@@ -2754,7 +2754,7 @@ app.controller('orderCtrl', ["$scope", "$http", "$state", "$modal", "$window", "
             var order_code = $scope.order_code;
 
             //console.log("Order ID: " + order_id);
-            console.log("order_code : " + order_code);
+            //console.log("order_code : " + order_code);
 
             $scope.printOrderCode = $scope.order_code;
 
