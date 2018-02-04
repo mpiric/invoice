@@ -1228,7 +1228,7 @@ class Order_model extends CI_Model
         }
         
         $select .= 'order by ABS(o.order_code) desc';
-        
+
         $session_data = $this->session->userdata('logged_in');
         if ($session_data['branch_type'] == 1) {
             if ($branch_id == '' && $fromdate == "" && $todate == "") {
@@ -2210,6 +2210,35 @@ CASE WHEN payment_type = 1 THEN "Cash" WHEN payment_type = 2 THEN "Credit Card" 
 
         $result = $query->row_array();
         return $result['bill_count'];
+    }
+
+    public function getDefaultDailySales(){
+        //for testing purpose... not in actual use
+        $session_data = $this->session->userdata('logged_in');
+        $branch_id    = $session_data['branch_id'];
+
+        echo $sql = 'SELECT SUM(round(o.total_amount)) as bill_amount, SUM(o.sub_total*o.discount_amount/100) as discount,SUM(o.sub_total) as sub_total, DATE(o.order_date_time)
+                FROM order_detail o
+                left join branch b on b.branch_id = o.branch_id 
+                
+                where o.branch_id ="' . $branch_id . '" AND o.is_print=1
+                GROUP BY DATE(o.order_date_time) '; 
+        
+        /* SELECT SUM( o.total_amount ) AS bill_amount, SUM( o.sub_total * o.discount_amount /100 ) AS discount, SUM( o.sub_total ) AS sub_total, DATE( o.order_date_time ) 
+FROM order_detail o
+LEFT JOIN branch b ON b.branch_id = o.branch_id
+WHERE o.branch_id =  "13"
+AND o.is_print =1
+AND DATE( o.order_date_time ) >=  '2017-12-01'
+AND DATE( o.order_date_time ) <=  '2017-12-31'
+GROUP BY DATE( o.order_date_time ) 
+ORDER BY DATE( o.order_date_time ) 
+LIMIT 0 , 30
+*/
+        $query = $this->db->query($sql);
+        $result = $query->result_array();
+
+        return $result;
     }
 
 
