@@ -792,12 +792,13 @@ class Order extends CI_Controller
             // {
             $updateData                    = array();
             $updateData['order_code']      = $latest_printed_bill_code;
+            $updateData['order_date_time']      = date("Y-m-d H:i:s");
             
             $this->order_model->update_order_data_by_id($updateData, $order_id);
             //}
             
             $order_details = $this->order_model->get_details_by_id($order_id);
-            
+
             // then update branch code
             $this->order_model->update_branch_code($latest_printed_bill_code);
             

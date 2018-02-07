@@ -98,7 +98,7 @@ class Order_model extends CI_Model
         
         $query  = $this->db->query(" 
              SELECT waiter.firstname AS waiter_name,b.name AS branch_name, b.address AS branch_address, total_amount, order_detail.*,t.`table_number`,t.`max_capacity`,
-            DATE_FORMAT(`order_date_time`,'%d/%m/%Y') AS order_date, DATE_FORMAT(`order_date_time`, '%h:%i %p') AS order_time, order_type 
+            DATE_FORMAT(order_detail.`order_date_time`,'%d/%m/%Y') AS order_date, DATE_FORMAT(order_detail.`order_date_time`, '%h:%i %p') AS order_time, order_type 
             FROM order_detail 
             LEFT JOIN waiter ON waiter.waiter_id = order_detail.waiter_id 
             LEFT JOIN `table_detail` t ON (order_detail.`table_detail_id` = t.`table_detail_id`)
