@@ -1729,11 +1729,11 @@ app.controller('orderCtrl', ["$scope", "$http", "$state", "$modal", "$window", "
                                     $scope.is_bill_saved = true;
                                 });
 
-                            });
+                                setTimeout(function() {
+                                    $('#table_row_' + angular.element('#table_number').val()).click();
+                                }, 1000);
 
-                            setTimeout(function() {
-                                $('#table_row_' + angular.element('#table_number').val()).click();
-                            }, 400);
+                            });
 
                             // order tax
 
@@ -1749,9 +1749,10 @@ app.controller('orderCtrl', ["$scope", "$http", "$state", "$modal", "$window", "
                             });
 
                             request.success(function(response) {
-                                //console.log(response);
-
+                                
                             });
+
+
 
 
                             // $rootScope.$emit("CallParcelGetNextBill");
