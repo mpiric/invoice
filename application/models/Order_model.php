@@ -1391,7 +1391,7 @@ class Order_model extends CI_Model
     
     public function order_tax_data($order_id, $sub_total, $discount)
     {
-        $amnt  = ($sub_total * $discount)/100;
+        $amnt  = $sub_total - ($sub_total * $discount)/100;
         $query = $this->db->query('select  ot.*,tm.tax_name,ot.order_id,CAST((ot.tax_percent*"' . $amnt . '")/100 AS DECIMAL(6,2)) as tax_amount from order_tax ot  
                                     left join tax_main tm on tm.tax_id = ot.tax_id 
                                     left join order_detail od on od.order_id = ot.order_id
