@@ -443,78 +443,82 @@
                             </div>
                             <div style="float:right" id="total_div">
                                 <table>
+                                    
                                     <tr>
                                         <td>Total Amount : </td>
-                                        <td>{{parcel_totalAmount()}}</td>
+                                        <td align="right">{{parcel_totalAmount().toFixed(2)}}</td>
                                     </tr>
+                                    
                                     <tr id="parcel_total_tax_1_div"  ng-show="parcel_show_tax_1">
                                         <td>{{parcel_tax_1}}  : </td>
-                                        <td>{{parcel_service_tax_total()}}</td>
+                                        <td align="right">{{parcel_service_tax_total().toFixed(2)}}</td>
                                     </tr>
                                     <tr id="parcel_total_tax_2_div"  ng-show="parcel_show_tax_2">
                                         <td>{{parcel_tax_2}} : </td>
-                                        <td>{{parcel_other_tax_total()}}</td>
+                                        <td align="right">{{parcel_other_tax_total().toFixed(2)}}</td>
                                     </tr>
-                                    <tr>
-                                        <td>-----------------------------------------</td>
-                                    </tr>
+                                    
                                     <tr id="parcel_final_amount_div">
                                         <td>Sub Total : </td>
-                                        <td>{{parcel_finalTotal()}}</td>
+                                        <td align="right">{{parcel_finalTotal().toFixed(2)}}</td>
                                     </tr>
-                                    <tr>
-                                        <td>-----------------------------------------</td>
-                                    </tr>
+
                                     <tr>
                                         <td>Discount Type:</td>
-                                        <td>
-                                            <select style="width: 50%" ng-change="parcel_requestDiscounttype()" class="form-control" name="discount_type" ng-model="parcel_discount_type" ng-options="item as item.value for item in parcel_discount_type_list track by item.key"  tabindex="-1" ng-disabled="!online">
+                                        <td align="right">
+                                            <select  ng-change="parcel_requestDiscounttype()" class="form-control" name="discount_type" ng-model="parcel_discount_type" ng-options="item as item.value for item in parcel_discount_type_list track by item.key"  tabindex="-1" ng-disabled="!online">
                                                 <option value="" ng-if ="false"></option>
                                             </select>
                                         </td>
                                     </tr>
                                     <tr ng-show="parcel_discount_type.key==2">
                                         <td>Discount Amount: </td>
-                                        <td><input style="width: 50%" type="text" class="form-control" ng-model="parcel_discount_amount" ng-change="parcel_requestDiscounttype()" id="parcel_discount_amount" placeholder="Discount" name="discount_amount" tabindex="-1" ng-disabled="!online" only-digits></td>
+                                        <td align="right"><input type="text" class="form-control" ng-model="parcel_discount_amount" ng-change="parcel_requestDiscounttype()" id="parcel_discount_amount" placeholder="Discount" name="discount_amount" tabindex="-1" ng-disabled="!online" only-digits></td>
                                     </tr>
-                                    <tr>
-                                        <td>-----------------------------------------</td>
-                                    </tr>
+                                    
+
+
                                     <tr>
                                         <td>Payment Type:</td>
                                         <td>
-                                            <select style="width: 50%" class="form-control" name="payment_type" ng-model="parcel_payment_type" ng-options="item as item.value for item in parcel_payment_type_list track by item.key"  tabindex="-1" ng-change="parcel_updatePaymentType()" ng-disabled="!online">
+                                            <select class="form-control" name="payment_type" ng-model="parcel_payment_type" ng-options="item as item.value for item in parcel_payment_type_list track by item.key"  tabindex="-1" ng-change="parcel_updatePaymentType()" ng-disabled="!online">
                                                 <option value="" ng-if ="false"></option>
                                             </select>
                                         </td>
                                     </tr>
                                     <tr ng-show="parcel_payment_type.key==2">
                                         <td>Credit Card Number: </td>
-                                        <td><input style="width: 50%" type="text" class="form-control" ng-model="parcel_payment_card_number" id="parcel_payment_card_number" placeholder="Credit Card Number" name="payment_card_number" tabindex="-1" ng-keyup="parcel_changePayment_card_numberOnKeyup(parcel_payment_card_number)" ng-keydown="parcel_changePayment_card_numberOnKeydown(parcel_payment_card_number)" ng-disabled="!online" only-digits></td>
+                                        <td><input  type="text" class="form-control" ng-model="parcel_payment_card_number" id="parcel_payment_card_number" placeholder="Credit Card Number" name="payment_card_number" tabindex="-1" ng-keyup="parcel_changePayment_card_numberOnKeyup(parcel_payment_card_number)" ng-keydown="parcel_changePayment_card_numberOnKeydown(parcel_payment_card_number)" ng-disabled="!online" only-digits></td>
                                     </tr>
                                     <tr ng-show="parcel_payment_type.key==3">
                                         <td>Debit Card Number: </td>
-                                        <td><input style="width: 50%" type="text" class="form-control" ng-model="parcel_payment_card_number" ng-keyup="changePayment_card_numberOnKeyup(parcel_payment_card_number)" ng-keydown="changePayment_card_numberOnKeydown(parcel_payment_card_number)"  id="parcel_payment_card_number" placeholder="Debit Card Number" name="payment_card_number" tabindex="-1" ng-disabled="!online" only-digits></td>
+                                        <td><input  type="text" class="form-control" ng-model="parcel_payment_card_number" ng-keyup="changePayment_card_numberOnKeyup(parcel_payment_card_number)" ng-keydown="changePayment_card_numberOnKeydown(parcel_payment_card_number)"  id="parcel_payment_card_number" placeholder="Debit Card Number" name="payment_card_number" tabindex="-1" ng-disabled="!online" only-digits></td>
+                                    </tr>
+
+
+                                    <tr ng-repeat="bs_tax1 in parcel_branchSpecificTax_list">
+                                        <td>{{bs_tax1.tax_name}} ( {{bs_tax1.tax_percent}} % ) :  </td>
+                                        <td align="right">  {{calculateBranchSpecificTaxParcel(bs_tax1.tax_percent) | number:2}} </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>TOTAL : </td>
+                                        <td align="right" > {{parcel_finalOrderTotal().toFixed(2)}} </td>
+                                    </tr>
+                                    <tr style="font-size:18px;color:#5b5b60 ;padding:5px 0px;">
+                                        <td><b>GRAND TOTAL : </b></td>
+                                        <td align="right" ><b>{{round_off_parcel_finalOrderTotal().toFixed(2)}}</b></td>
+                                    </tr>
+                                    <tr >
+                                        <td>Given Amount : </td>
+                                        <td  ><input style="width:100%;" id="parcel_given_amount_div" type="text" name="given_amount" ng-keyup="parcel_changeGivenAmountOnKeyup(parcel_given_amount)" ng-keydown="parcel_changeGivenAmountOnKeydown(parcel_given_amount)" ng-model="parcel_given_amount" tabindex="-1" ng-disabled="!online" only-digits></td>
                                     </tr>
                                     <tr>
-                                        <td>-----------------------------------------</td>
-                                    </tr>
-                                    <tr>
-                                        <table>
-                                            <tr ng-repeat="bs_tax1 in parcel_branchSpecificTax_list">
-                                                <td>{{bs_tax1.tax_name}} ( {{bs_tax1.tax_percent}} % ) : {{calculateBranchSpecificTaxParcel(bs_tax1.tax_percent)}} </td>
-                                            </tr>
-                                        </table>
-                                    </tr>
-                                    <tr>
-                                        <td>-----------------------------------------</td>
+                                        <td>Return Amount : </td>
+                                        <td align="right" >{{(parcel_given_amount-parcel_finalOrderTotal()).toFixed(2)}}</td>
                                     </tr>
                                 </table>
-                                <p><b> TOTAL : {{parcel_finalOrderTotal()}}</b></p>
-                                <p><b> Round Off TOTAL : {{round_off_parcel_finalOrderTotal()}}</b></p>
-                                <p >Given Amount : <input id="parcel_given_amount_div" type="text" name="given_amount" ng-keyup="parcel_changeGivenAmountOnKeyup(parcel_given_amount)" ng-keydown="parcel_changeGivenAmountOnKeydown(parcel_given_amount)" ng-model="parcel_given_amount" tabindex="-1" ng-disabled="!online" only-digits></p>
-                                <p id="parcel_return_amount_div">Return Amount : {{(parcel_given_amount-parcel_finalOrderTotal()).toFixed(2)}}</p>
-                                <p style="font-size:22px; float:right">Daily Income : {{parcel_dailyIncome}}</p>
+                                
                             </div>
                             <div class="col-md-4">
                                 <button  ng-disabled="countTotalProductsLive() || !online" class="btn btn-lg btn-primary btn-o hidden-print" ng-click="parcel_resetOrder()">Reset</button>
@@ -543,27 +547,34 @@
                                 Bill details <!-- - <span id="delivery_bill_number"></span> -->
                             </legend>
                             <div class="row">
+                                <div class="col-md-12" style="font-size:18px;margin-bottom: 10px;">Customer Details</div>
                                 <div class="form-group col-md-4">
+                                    <label>Contact Number: </label>
+                                    <input type="text" name="customer_contact" placeholder="Customer Contact" ng-model="customer_contact" class="form-control"  required only-digits >   
+                                    <!-- ng-pattern="/^\d{0,9}?$/" -->
+                                    <div class="has-error" ng-show="delivery_order_form.$submitted || delivery_order_form.customer_contact.$touched">
+                                        <span class="error text-small block ng-scope" ng-show="delivery_order_form.customer_contact.$error.required">Contact is required.</span>    
+                                        <span class="error text-small block ng-scope" ng-show="delivery_order_form.customer_contact.$error.pattern">Not a valid Number!</span>                        
+                                        </div>
+                                </div>
+
+                                <div class="form-group col-md-4">
+                                    <label>Name: </label>
                                     <input type="text" name="customer_name" placeholder="Customer Name" ng-model="customer_name" class="form-control" focus-name="p1" required>	
-                                    <div class="has-error" ng-show="delivery_order_form.$submitted || delivery_order_form.customer_name.$touched">
+                                    <div class="has-error" ng-show="(delivery_order_form.$submitted || delivery_order_form.customer_name.$touched) && (customer_contact!=0)">
                                         <span class="error text-small block ng-scope" ng-show="delivery_order_form.customer_name.$error.required">Customer Name is required.</span>
                                     </div>
                                 </div>
+                                
                                 <div class="form-group col-md-4">
-                                    <input type="text" name="customer_contact" placeholder="Customer Contact" ng-model="customer_contact" class="form-control"  required only-digits>	
-                                    <!-- ng-pattern="/^\d{0,9}?$/" -->
-                                    <!-- <div class="has-error" ng-show="delivery_order_form.$submitted || delivery_order_form.customer_contact.$touched">
-                                        <span class="error text-small block ng-scope" ng-show="delivery_order_form.customer_contact.$error.required">Contact is required.</span>	
-                                        <span class="error text-small block ng-scope" ng-show="delivery_order_form.customer_contact.$error.pattern">Not a valid Number!</span>					      
-                                        </div>	 -->
-                                </div>
-                                <div class="form-group col-md-4">
-                                    <input type="text" name="customer_address" placeholder="Customer Address" ng-model="customer_address" class="form-control" required> 	
-                                    <div class="has-error" ng-show="delivery_order_form.$submitted || delivery_order_form.customer_address.$touched">
+                                    <label>Delivery Address: </label>
+                                    <textarea type="text" name="customer_address" placeholder="Customer Address" ng-model="customer_address" class="form-control" required></textarea>
+                                    <div class="has-error" ng-show="(delivery_order_form.$submitted || delivery_order_form.customer_address.$touched) && (customer_contact!=0)">
                                         <span class="error text-small block ng-scope" ng-show="delivery_order_form.customer_address.$error.required">Customer Address is required.</span>
                                     </div>
                                 </div>
                             </div>
+                            <hr style="margin-top: 0px;">
                             <div class="row">
                                 <div class="form-group col-md-4">
                                     <ui-select ng-model="delivery_product_list.selected" theme="bootstrap" ng-required="true"  >
@@ -624,78 +635,74 @@
                                 </table>
                             </div>
                             <div style="float:right" id="total_div">
-                                <table>
+
+                                    <table>
                                     <tr>
                                         <td>Total Amount : </td>
-                                        <td>{{delivery_totalAmount()}}</td>
+                                        <td align="right">{{delivery_totalAmount().toFixed(2)}}</td>
                                     </tr>
                                     <tr id="delivery_total_tax_1_div"  ng-show="delivery_show_tax_1">
                                         <td>{{delivery_tax_1}}  : </td>
-                                        <td>{{delivery_service_tax_total()}}</td>
+                                        <td align="right">{{delivery_service_tax_total().toFixed(2)}}</td>
                                     </tr>
                                     <tr id="delivery_total_tax_2_div"  ng-show="delivery_show_tax_2">
                                         <td>{{delivery_tax_2}} : </td>
-                                        <td>{{delivery_other_tax_total()}}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>-----------------------------------------</td>
+                                        <td align="right">{{delivery_other_tax_total().toFixed(2)}}</td>
                                     </tr>
                                     <tr id="delivery_final_amount_div">
                                         <td>Sub Total : </td>
-                                        <td>{{delivery_finalTotal()}}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>-----------------------------------------</td>
+                                        <td align="right">{{delivery_finalTotal().toFixed(2)}}</td>
                                     </tr>
                                     <tr>
                                         <td>Discount Type:</td>
-                                        <td>
-                                            <select style="width: 50%" ng-change="delivery_requestDiscounttype()" class="form-control" name="discount_type" ng-model="delivery_discount_type" ng-options="item as item.value for item in delivery_discount_type_list track by item.key" ng-disabled="!online" tabindex="-1">
+                                        <td align="right">
+                                            <select ng-change="delivery_requestDiscounttype()" class="form-control" name="discount_type" ng-model="delivery_discount_type" ng-options="item as item.value for item in delivery_discount_type_list track by item.key" ng-disabled="!online" tabindex="-1">
                                                 <option value="" ng-if ="false"></option>
                                             </select>
                                         </td>
                                     </tr>
                                     <tr ng-show="delivery_discount_type.key==2">
                                         <td>Discount Amount: </td>
-                                        <td><input style="width: 50%" type="text" class="form-control" ng-model="delivery_discount_amount" ng-change="delivery_requestDiscounttype()" id="delivery_discount_amount" placeholder="Discount" name="discount_amount" tabindex="-1" ng-disabled="!online" only-digits></td>
-                                    </tr>
-                                    <tr>
-                                        <td>-----------------------------------------</td>
+                                        <td align="right"><input type="text" class="form-control" ng-model="delivery_discount_amount" ng-change="delivery_requestDiscounttype()" id="delivery_discount_amount" placeholder="Discount" name="discount_amount" tabindex="-1" ng-disabled="!online" only-digits></td>
                                     </tr>
                                     <tr>
                                         <td>Payment Type:</td>
                                         <td>
-                                            <select style="width: 50%" class="form-control" name="payment_type" ng-model="delivery_payment_type" ng-options="item as item.value for item in delivery_payment_type_list track by item.key"  tabindex="-1" ng-disabled="!online" ng-change="delivery_updatePaymentType()">
+                                            <select class="form-control" name="payment_type" ng-model="delivery_payment_type" ng-options="item as item.value for item in delivery_payment_type_list track by item.key"  tabindex="-1" ng-disabled="!online" ng-change="delivery_updatePaymentType()">
                                                 <option value="" ng-if ="false"></option>
                                             </select>
                                         </td>
                                     </tr>
                                     <tr ng-show="delivery_payment_type.key==2">
                                         <td>Credit Card Number: </td>
-                                        <td><input style="width: 50%" type="text" class="form-control" ng-model="delivery_payment_card_number" id="delivery_payment_card_number" placeholder="Credit Card Number" name="payment_card_number" tabindex="-1" ng-keyup="delivery_changePayment_card_numberOnKeyup(delivery_payment_card_number)" ng-keydown="delivery_changePayment_card_numberOnKeydown(delivery_payment_card_number)" ng-disabled="!online"  only-digits></td>
+                                        <td><input  type="text" class="form-control" ng-model="delivery_payment_card_number" id="delivery_payment_card_number" placeholder="Credit Card Number" name="payment_card_number" tabindex="-1" ng-keyup="delivery_changePayment_card_numberOnKeyup(delivery_payment_card_number)" ng-keydown="delivery_changePayment_card_numberOnKeydown(delivery_payment_card_number)" ng-disabled="!online"  only-digits></td>
                                     </tr>
                                     <tr ng-show="delivery_payment_type.key==3">
                                         <td>Debit Card Number: </td>
-                                        <td><input style="width: 50%" type="text" class="form-control" ng-model="delivery_payment_card_number" ng-keyup="changePayment_card_numberOnKeyup(delivery_payment_card_number)" ng-keydown="changePayment_card_numberOnKeydown(delivery_payment_card_number)"  id="delivery_payment_card_number" placeholder="Debit Card Number" name="payment_card_number" tabindex="-1" ng-disabled="!online" only-digits></td>
+                                        <td><input  type="text" class="form-control" ng-model="delivery_payment_card_number" ng-keyup="changePayment_card_numberOnKeyup(delivery_payment_card_number)" ng-keydown="changePayment_card_numberOnKeydown(delivery_payment_card_number)"  id="delivery_payment_card_number" placeholder="Debit Card Number" name="payment_card_number" tabindex="-1" ng-disabled="!online" only-digits></td>
+                                    </tr>
+                                    <tr ng-repeat="bs_tax2 in delivery_branchSpecificTax_list">
+                                        <td>{{bs_tax2.tax_name}} ( {{bs_tax2.tax_percent}} % ) :  </td>
+                                        <td align="right">{{calculateBranchSpecificTaxDelivery(bs_tax2.tax_percent)}} </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>TOTAL : </td>
+                                        <td align="right" > {{delivery_finalOrderTotal().toFixed(2)}} </td>
+                                    </tr>
+                                    <tr style="font-size:18px;color:#5b5b60 ;padding:5px 0px;">
+                                        <td><b>GRAND TOTAL : </b></td>
+                                        <td align="right" ><b>{{round_off_delivery_finalOrderTotal().toFixed(2)}}</b></td>
+                                    </tr>
+                                    <tr >
+                                        <td>Given Amount : </td>
+                                        <td><input style="width:100%;" id="delivery_given_amount_div" type="text" name="given_amount" ng-keyup="delivery_changeGivenAmountOnKeyup(delivery_given_amount)" ng-keydown="delivery_changeGivenAmountOnKeydown(delivery_given_amount)" ng-model="delivery_given_amount" tabindex="-1" ng-disabled="!online" only-digits></td>
                                     </tr>
                                     <tr>
-                                        <td>-----------------------------------------</td>
-                                    </tr>
-                                    <table>
-                                        <tr ng-repeat="bs_tax in delivery_branchSpecificTax_list">
-                                            <td>{{bs_tax.tax_name}} ( {{bs_tax.tax_percent}} % ) : {{calculateBranchSpecificTax(bs_tax.tax_percent)}} </td>
-                                        </tr>
-                                    </table>
-                                    </tr>
-                                    <tr>
-                                        <td>-----------------------------------------</td>
+                                        <td>Return Amount : </td>
+                                        <td align="right" >{{(delivery_given_amount-delivery_finalOrderTotal()).toFixed(2)}}</td>
                                     </tr>
                                 </table>
-                                <p><b> TOTAL : {{delivery_finalOrderTotal()}}</b></p>
-                                <p><b> Round Off TOTAL : {{round_off_delivery_finalOrderTotal()}}</b></p>
-                                <p >Given Amount : <input id="delivery_given_amount_div" type="text" name="given_amount" ng-keyup="delivery_changeGivenAmountOnKeyup(delivery_given_amount)" ng-keydown="delivery_changeGivenAmountOnKeydown(delivery_given_amount)" ng-model="delivery_given_amount" tabindex="-1" ng-disabled="!online" only-digits></p>
-                                <p id="delivery_return_amount_div">Return Amount : {{(delivery_given_amount-delivery_finalOrderTotal()).toFixed(2)}}</p>
-                                <p style="font-size:22px; float:right">Daily Income : {{delivery_dailyIncome}}</p>
                             </div>
                             <div class="col-md-4">
                                 <button  ng-disabled="countTotalProductsLive() || !online" class="btn btn-lg btn-primary btn-o hidden-print" ng-click="delivery_resetOrder()">Reset</button>

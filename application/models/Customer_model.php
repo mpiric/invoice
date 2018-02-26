@@ -60,7 +60,7 @@ class Customer_model extends CI_Model
     public function get_details_by_id($id)
     {
 
-        $query = $this->db->query(" SELECT order_detail.order_code,customer.order_id,customer.order_type, customer.customer_id, customer.firstname, customer.lastname, customer.contact, customer.email, customer.`created`, customer.`updated`, customer.`deleted` FROM `customer` LEFT JOIN `order_detail` ON `order_detail`.`order_id` = `customer`.`order_id` WHERE `customer`.`deleted` IS NULL AND customer.`customer_id`= $id ");
+        $query = $this->db->query(" SELECT order_detail.order_code,customer.order_id,customer.order_type, customer.customer_id, customer.firstname, customer.lastname,customer.address, customer.contact, customer.email, customer.`created`, customer.`updated`, customer.`deleted` FROM `customer` LEFT JOIN `order_detail` ON `order_detail`.`order_id` = `customer`.`order_id` WHERE `customer`.`deleted` IS NULL AND customer.`customer_id`= $id ");
 
         $result = $query->row_array();
         return $result;
@@ -103,7 +103,8 @@ class Customer_model extends CI_Model
 
     public function insert_into_customer($data)
     {
-        $result = $this->db->insert('customer',$data);
+         $this->db->insert('customer',$data);
+         $result = $this->db->insert_id();
         
         return $result;
     }

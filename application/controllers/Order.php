@@ -1068,6 +1068,11 @@ class Order extends CI_Controller
             
             $order_id      = $_POST['order_id'];
             $order_details = $this->order_model->get_details_by_id($_POST['order_id']);
+
+            if($order_details["order_type"]==2 && $order_details["customer_id"]!=0){
+            	$this->load->model('customer_model');
+            	$order_details['customer'] = $this->customer_model->get_details_by_id($order_details["customer_id"]);
+            }
             
             // if the order is complementary - discount_type 
             
@@ -1078,7 +1083,10 @@ class Order extends CI_Controller
             $response['data']   = $order_details;
             
             //$order_items_live_details = $this->order_model->get_all_data_order_items($_POST['order_id']);
-            $order_items = $this->order_model->get_items_by_order_id($_POST['order_id']);
+            //$order_items = $this->order_model->get_items_by_order_id($_POST['order_id']);
+
+
+            $order_items = $this->order_model->get_items_by_order_id($order_id);
             
             $grand_total   = 0;
             $invoice_total = 0;
@@ -1086,16 +1094,17 @@ class Order extends CI_Controller
             if (!empty($order_items)) {
                 $str = '';
                 
-                
+                $total_items = 0;
                 foreach ($order_items as $item) {
-                    
+                    $qty = (int) $item["quantity"];
+                    $total_items += $qty;
                     $invoice_total += $item["price"] * $item["quantity"];
                     
-                    $str .= '<tr style="font-size: 13px;">';
-                    $str .= '<td colspan="2">' . $item["product_name"] . '</td>';
-                    $str .= '<td>' . $item["quantity"] . '</td>';
-                    $str .= '<td>' . $item["price"] . '</td>';
-                    $str .= '<td>' . ($item["price"] * $item["quantity"]) . '</td>';
+                    $str .= '<tr >';
+                    $str .= '<td >' . $item["product_name"] . '</td>';
+                    $str .= '<td align="center">' . $qty . '</td>';
+                    $str .= '<td align="right">' . $item["price"] . '</td>';
+                    $str .= '<td align="right" style="padding-left:4px;">' . ($item["price"] * $item["quantity"]) . '</td>';
                     $str .= '</tr>';
                     
                 }
@@ -1105,9 +1114,11 @@ class Order extends CI_Controller
                 $response['invoice_items'] = $str;
                 $response['invoice_total'] = $invoice_total;
                 
-                // get total order items
-                $total_order_items = $this->order_model->get_total_order_items_by_order_id($order_id);
                 
+                // get total order items
+                //$total_order_items = $this->order_model->get_total_order_items_by_order_id($order_id);
+                $total_order_items = $total_items;
+
                 $response['total_order_items'] = $total_order_items;
             }
             
@@ -1117,27 +1128,41 @@ class Order extends CI_Controller
             //echo'<pre>';print_r($branch_specific_taxes);die;
             
             $bs_tax_str = '';
+            $total_tax = 0;
             if (!empty($branch_specific_taxes)) {
+
+                $subTotalDiscount = $invoice_total - (($invoice_total * $order_details['discount_amount']) / 100) ; 
                 
                 foreach ($branch_specific_taxes as $bs_tax) {
                     
-                    $tax_value = ($invoice_total * $bs_tax["tax_percent"]) / 100;
+                    $tax_value = number_format((float) ($subTotalDiscount * $bs_tax["tax_percent"]) / 100, 2, '.', '');
                     
-                    $grand_total += $tax_value;
+                    $total_tax += $tax_value;
+
                     
                     if ($order_details['discount_type'] == 1) {
-                        $bs_tax_str .= '<tr style="font-size: 13px;"><td>&nbsp;</td><td>&nbsp;</td><td colspan="2">' . $bs_tax["tax_name"] . '(' . $bs_tax["tax_percent"] . '%)</td><td>0</td></tr>';
+                        $bs_tax_str .= '<tr><td colspan="4">' . $bs_tax["tax_name"] . ' @ ' . $bs_tax["tax_percent"] . '%</td><td align="right">0</td></tr>';
                     } else {
-                        $bs_tax_str .= '<tr style="font-size: 13px;"><td>&nbsp;</td><td>&nbsp;</td><td colspan="2">' . $bs_tax["tax_name"] . '(' . $bs_tax["tax_percent"] . '%)</td><td>' . $tax_value . '</td></tr>';
+                        $bs_tax_str .= '<tr><td colspan="4">' . $bs_tax["tax_name"] . ' @ ' . $bs_tax["tax_percent"] . '%</td><td align="right">' . $tax_value . '</td></tr>';
                     }
+
+                    $this->order_model->check_order_tax($bs_tax, $order_id);
                 }
             }
+
+            //ADD tax in total
+            //$grand_total += $tax_value;
+
             // reduce discount from total amount
             
             $response['branch_specific_taxes'] = $bs_tax_str;
             
-            if (intVal($order_details['discount_amount']) != 0 && $order_details['discount_amount'] != '') {
-                $grand_total = $grand_total - (($grand_total * $order_details['discount_amount']) / 100);
+            if(intVal($order_details['discount_amount'])!=0 && $order_details['discount_amount']!='')
+            {
+                //$grand_total = $grand_total-(($grand_total*$order_details['discount_amount'])/100);
+                $grand_total = $subTotalDiscount + $total_tax;
+            } else {
+                $grand_total += $total_tax;
             }
             
             if ($order_details['discount_type'] == 1) {
@@ -1146,6 +1171,14 @@ class Order extends CI_Controller
             } else {
                 $response['grand_total'] = $grand_total;
             }
+
+            $finalUpdate = array();
+            $finalUpdate['sub_total'] = $invoice_total;
+            $finalUpdate['total_amount'] = $response['grand_total'];
+            $finalUpdate['round_off_total_amount'] = round($response['grand_total']);
+            $finalUpdate['updated'] = date("Y-m-d H:i:s");
+            //$updateData['is_print'] = 1;
+            $this->order_model->update_order_data_by_id($finalUpdate, $order_id);
             
             
             // get branch details 
@@ -1154,7 +1187,83 @@ class Order extends CI_Controller
             
             if (!empty($branch_details)) {
                 $response['branch_details'] = $branch_details;
-            }
+             }
+            
+            // $grand_total   = 0;
+            // $invoice_total = 0;
+            
+            // if (!empty($order_items)) {
+            //     $str = '';
+                
+                
+            //     foreach ($order_items as $item) {
+                    
+            //         $invoice_total += $item["price"] * $item["quantity"];
+                    
+            //         $str .= '<tr style="font-size: 13px;">';
+            //         $str .= '<td colspan="2">' . $item["product_name"] . '</td>';
+            //         $str .= '<td>' . $item["quantity"] . '</td>';
+            //         $str .= '<td>' . $item["price"] . '</td>';
+            //         $str .= '<td>' . ($item["price"] * $item["quantity"]) . '</td>';
+            //         $str .= '</tr>';
+                    
+            //     }
+                
+            //     $grand_total += $invoice_total;
+                
+            //     $response['invoice_items'] = $str;
+            //     $response['invoice_total'] = $invoice_total;
+                
+            //     // get total order items
+            //     $total_order_items = $this->order_model->get_total_order_items_by_order_id($order_id);
+                
+            //     $response['total_order_items'] = $total_order_items;
+            // }
+            
+            // $this->load->model('tax_model');
+            // $branch_specific_taxes = $this->tax_model->branch_specific_tax_list_by_order_type($order_details['order_type']);
+            
+            // //echo'<pre>';print_r($branch_specific_taxes);die;
+            
+            // $bs_tax_str = '';
+            // if (!empty($branch_specific_taxes)) {
+                
+            //     foreach ($branch_specific_taxes as $bs_tax) {
+                    
+            //         $tax_value = ($invoice_total * $bs_tax["tax_percent"]) / 100;
+                    
+            //         $grand_total += $tax_value;
+                    
+            //         if ($order_details['discount_type'] == 1) {
+            //             $bs_tax_str .= '<tr style="font-size: 13px;"><td>&nbsp;</td><td>&nbsp;</td><td colspan="2">' . $bs_tax["tax_name"] . '(' . $bs_tax["tax_percent"] . '%)</td><td>0</td></tr>';
+            //         } else {
+            //             $bs_tax_str .= '<tr style="font-size: 13px;"><td>&nbsp;</td><td>&nbsp;</td><td colspan="2">' . $bs_tax["tax_name"] . '(' . $bs_tax["tax_percent"] . '%)</td><td>' . $tax_value . '</td></tr>';
+            //         }
+            //     }
+            // }
+            // // reduce discount from total amount
+            
+            // $response['branch_specific_taxes'] = $bs_tax_str;
+            
+            // if (intVal($order_details['discount_amount']) != 0 && $order_details['discount_amount'] != '') {
+            //     $grand_total = $grand_total - (($grand_total * $order_details['discount_amount']) / 100);
+            // }
+            
+            // if ($order_details['discount_type'] == 1) {
+            //     //complementary
+            //     $response['grand_total'] = $grand_total - $grand_total;
+            // } else {
+            //     $response['grand_total'] = $grand_total;
+            // }
+            
+            
+            // // get branch details 
+            // $this->load->model('branch_model');
+            // $branch_details = $this->branch_model->get_branch_details_by_login_branch();
+            
+            // if (!empty($branch_details)) {
+            //     $response['branch_details'] = $branch_details;
+            // }
             
             
             //$response['invoice_items'] = '<tr><td colspan="2">Capicum Rava</td><td>1</td><td>185</td><td>185</td></tr><tr><td colspan="2">Capicum Rava</td><td>1</td><td>185</td><td>185</td></tr>';

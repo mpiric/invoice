@@ -411,7 +411,11 @@ class Order_model extends CI_Model
                 $customer_data['order_type'] = $post_data['order_type'];
                 $customer_data['order_id']   = $order_id;
                 $this->load->model('customer_model');
-                $this->customer_model->insert_into_customer($customer_data);
+                $customer_id = $this->customer_model->insert_into_customer($customer_data);
+
+                $data['customer_id'] = $customer_id;
+                $this->db->where('order_id', $order_id);
+                $result = $this->db->update('order_detail', $data);
             }
             
             // update branch order code
