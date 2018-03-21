@@ -4,7 +4,7 @@
 	//connection of database
 // Report all PHP errors
 	//error_reporting(-1);
-	date_default_timezone_set("Asia/Kolkata");
+	//date_default_timezone_set("Asia/Kolkata");
 
 	(@include_once('dbconnection.php')) or die('connectionClass file does not found.');
 
@@ -203,9 +203,9 @@
                
             }
 
-            $daily_result['bill_amount']    = (float) ($daily_result['sub_total']) + (float) ($taxSum) - ((float) ($daily_result['discount']));
-            $daily_result['roundoff']       = round($daily_result['bill_amount'] + $round_off_value_total);
-            $daily_result['roundoff_value'] = $round_off_value_total;
+            // $daily_result['bill_amount']    = (float) ($daily_result['sub_total']) + (float) ($taxSum) - ((float) ($daily_result['discount']));
+            // $daily_result['roundoff']       = round($daily_result['bill_amount'] + $round_off_value_total);
+            // $daily_result['roundoff_value'] = $round_off_value_total;
 
 
 
@@ -217,30 +217,15 @@
 
             if(isset($daily_result['branch_id']))
             {
-            	$final['roundoff_value'] = isset($daily_result['roundoff_value']) ? $daily_result['roundoff_value'] : 0.00;
-	            $final['sub_total']  = isset($daily_result['sub_total']) ? $daily_result['sub_total'] : 0;
-	            $final['tax_free']    = isset($daily_result['tax_free']) ? $daily_result['tax_free'] : 0;
-	            $final['discount']   = isset($daily_result['discount']) ? $daily_result['discount'] : 0;
-	            $final['bill_amount'] = isset($daily_result['bill_amount']) ? $daily_result['bill_amount'] : 0;
-	            $final['roundoff']  = isset($daily_result['roundoff']) ? $daily_result['roundoff'] : 0;
-	            $final['created']  =  date("Y-m-d");
-	            //$final['created']  =  '2017-07-01';
-
-            	$final['branch_id'] = isset($daily_result['branch_id']) ? $daily_result['branch_id'] : 0; 
-
-            	//$order_tax_list_cnt = count($order_tax_list);
-
-	           // if($order_tax_list_cnt>0)
-	           // {
-	           // 	$final['order_tax'] = $order_tax_list;
-	           // }
-
-	           //$details = $final;
             	
-
-            	//echo $field_cond;
-            
-            	//echo $val_cond;
+            	$final['branch_id'] = isset($daily_result['branch_id']) ? $daily_result['branch_id'] : 0;
+            	$final['created']  =  date("Y-m-d");
+            	$final['sub_total']  = isset($daily_result['sub_total']) ? $daily_result['sub_total'] : 0;
+            	$final['tax_free']    = isset($daily_result['tax_free']) ? $daily_result['tax_free'] : 0;
+            	$final['discount']   = ($daily_result['sub_total'] * $daily_result['discount']) / 100;
+            	$final['bill_amount'] = isset($daily_result['bill_amount']) ? $daily_result['bill_amount'] : 0;
+            	$final['total']  = isset($daily_result['roundoff']) ? $daily_result['roundoff'] : 0;
+            	$final['roundoff_value'] = $final['total'] - $final['bill_amount'];
             	
 				// get values from daily sales table
 
@@ -255,7 +240,24 @@
 				if($qry_result=='0')
 				{
 					//echo "Insert";
-					$ins = "INSERT INTO `daily_sales` (branch_id,created,net_amount,tax_free,discount,bill_amount,round_off,total".$field_cond.") VALUES (".$final['branch_id'].",'".$final['created']."',".$final['sub_total'].",".$final['tax_free'].",".$final['discount'].",".$final['bill_amount'].",".$final['roundoff_value'].",".$final['roundoff']."".$val_cond.");";
+					$ins = "INSERT INTO `daily_sales` (
+					branch_id,
+					created,
+					net_amount,
+					tax_free,
+					discount,
+					bill_amount,
+					round_off,
+					total".$field_cond.") 
+					VALUES (
+						".$final['branch_id'].",
+						'".$final['created']."',
+						".$final['sub_total'].",
+						".$final['tax_free'].",
+						".$final['discount'].",
+						".$final['bill_amount'].",
+						".$final['roundoff_value'].",
+						".$final['total']."".$val_cond.");";
 
 	            	//echo $ins;
 
@@ -289,7 +291,7 @@
 	            		$str .= ",".$key."="."'".$value."'";
 	            	}
 
-					$update = "UPDATE `daily_sales` SET branch_id=".$final['branch_id'].", created ='".$final['created']."', net_amount=".$final['sub_total'].", tax_free=".$final['tax_free'].", discount=".$final['discount'].", bill_amount=".$final['bill_amount'].", round_off=".$final['roundoff_value'].", total=".$final['roundoff']."".$str." WHERE branch_id='".$branch_id."' AND created = '".$current_date."' ";
+					$update = "UPDATE `daily_sales` SET branch_id=".$final['branch_id'].", created ='".$final['created']."', net_amount=".$final['sub_total'].", tax_free=".$final['tax_free'].", discount=".$final['discount'].", bill_amount=".$final['bill_amount'].", round_off=".$final['roundoff_value'].", total=".$final['total']."".$str." WHERE branch_id='".$branch_id."' AND created = '".$current_date."' ";
 
 	            	// echo $update;
 	            	// die;
@@ -319,7 +321,7 @@
 	function dailySalesList($conn,$branch_id,$current_date)
 	{
 
-        $daily_sales_query = $conn->prepare('SELECT CAST( SUM(  CASE
+        /*$daily_sales_query = $conn->prepare('SELECT CAST( SUM(  CASE
 							                  WHEN (ROUND(o.total_amount)) < o.total_amount
 							                          THEN ROUND(o.total_amount) - o.total_amount
 							                   WHEN (ROUND(o.total_amount)) > o.total_amount
@@ -336,7 +338,15 @@
 							                FROM order_detail o                
 							                LEFT JOIN branch b ON b.branch_id = o.branch_id              
 							                WHERE DATE( o.order_date_time ) = "'.$current_date.'" AND o.branch_id="'.$branch_id.'" AND o.is_print=1
-							                GROUP BY DATE(o.order_date_time)' );
+							                GROUP BY DATE(o.order_date_time)' );*/
+
+        $daily_sales_query = $conn->prepare(' SELECT o.order_id,o.total_amount as bill_amount, o.order_type as orderType, DATE_FORMAT(o.created, "%d-%m-%Y %H:%i") AS created,b.brand_id, o.discount_amount as discount,o.sub_total,o.order_code, o.number_of_person, o.branch_id AS branch_id
+                FROM order_detail o
+                left join branch b on b.branch_id = o.branch_id 
+                
+                
+                where o.branch_id= "' . $branch_id . '" AND o.is_print=1 AND DATE( o.order_date_time ) = "'.$current_date.'"
+                order by ABS(o.order_code) ');
 
 
         $daily_sales_query->execute();
@@ -416,8 +426,7 @@
 
 	function get_tax_data_by_date_and_tax_id_daily_sales($conn,$date, $tax_id, $branch_id)
 	{
-		$taxquery = $conn->prepare(" SELECT ot.*,(SELECT SUM(quantity*price) FROM order_items 
-									WHERE order_id=o.order_id) AS subTotal, SUM( ( ((SELECT SUM(quantity*price) FROM order_items WHERE order_id=o.order_id)-((SELECT SUM(quantity*price) FROM order_items WHERE order_id=o.order_id) * o.discount_amount/100)) *ot.tax_percent)/100 ) AS tax_amount, tm.tax_name, o.branch_id AS branch_id 
+		$taxquery = $conn->prepare(" SELECT ot.*, o.sub_total AS subTotal, SUM( ( ((o.sub_total)-((o.sub_total) * o.discount_amount/100)) * ot.tax_percent)/100 ) AS tax_amount, tm.tax_name, o.branch_id AS branch_id 
 									FROM order_detail o 
 									LEFT JOIN order_tax ot ON (o.order_id = ot.order_id) 
 									LEFT JOIN tax_main tm ON tm.tax_id = ot.tax_id 
