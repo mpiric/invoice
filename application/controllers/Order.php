@@ -849,16 +849,16 @@ class Order extends CI_Controller
             
             $bs_tax_str = '';
             $total_tax = 0;
+
+            $subTotalDiscount = $invoice_total - (($invoice_total * $order_details['discount_amount']) / 100) ; 
+
             if (!empty($branch_specific_taxes)) {
 
-                $subTotalDiscount = $invoice_total - (($invoice_total * $order_details['discount_amount']) / 100) ; 
-                
                 foreach ($branch_specific_taxes as $bs_tax) {
                     
                     $tax_value = number_format((float) ($subTotalDiscount * $bs_tax["tax_percent"]) / 100, 2, '.', '');
                     
                     $total_tax += $tax_value;
-
                     
                     if ($order_details['discount_type'] == 1) {
                         $bs_tax_str .= '<tr><td colspan="4">' . $bs_tax["tax_name"] . ' @ ' . $bs_tax["tax_percent"] . '%</td><td align="right">0</td></tr>';
@@ -908,8 +908,6 @@ class Order extends CI_Controller
             if (!empty($branch_details)) {
                 $response['branch_details'] = $branch_details;
             }
-            
-            
             
             //$response['invoice_items'] = '<tr><td colspan="2">Capicum Rava</td><td>1</td><td>185</td><td>185</td></tr><tr><td colspan="2">Capicum Rava</td><td>1</td><td>185</td><td>185</td></tr>';
             
@@ -1113,7 +1111,6 @@ class Order extends CI_Controller
                 
                 $response['invoice_items'] = $str;
                 $response['invoice_total'] = $invoice_total;
-                
                 
                 // get total order items
                 //$total_order_items = $this->order_model->get_total_order_items_by_order_id($order_id);
