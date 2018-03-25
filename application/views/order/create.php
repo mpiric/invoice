@@ -550,7 +550,7 @@
                                 <div class="col-md-12" style="font-size:18px;margin-bottom: 10px;">Customer Details</div>
                                 <div class="form-group col-md-4">
                                     <label>Contact Number: </label>
-                                    <input type="text" name="customer_contact" placeholder="Customer Contact" ng-model="customer_contact" class="form-control"  required only-digits >   
+                                    <input type="text" name="customer_contact" placeholder="Customer Contact" ng-model="customer_contact" class="form-control"  required only-digits autocomplete="off">   
                                     <!-- ng-pattern="/^\d{0,9}?$/" -->
                                     <div class="has-error" ng-show="delivery_order_form.$submitted || delivery_order_form.customer_contact.$touched">
                                         <span class="error text-small block ng-scope" ng-show="delivery_order_form.customer_contact.$error.required">Contact is required.</span>    

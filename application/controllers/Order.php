@@ -1123,12 +1123,13 @@ class Order extends CI_Controller
             $branch_specific_taxes = $this->tax_model->branch_specific_tax_list_by_order_type($order_details['order_type']);
             
             //echo'<pre>';print_r($branch_specific_taxes);die;
+            $subTotalDiscount = $invoice_total - (($invoice_total * $order_details['discount_amount']) / 100) ; 
             
             $bs_tax_str = '';
             $total_tax = 0;
             if (!empty($branch_specific_taxes)) {
 
-                $subTotalDiscount = $invoice_total - (($invoice_total * $order_details['discount_amount']) / 100) ; 
+                
                 
                 foreach ($branch_specific_taxes as $bs_tax) {
                     

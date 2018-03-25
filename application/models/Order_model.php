@@ -402,20 +402,30 @@ class Order_model extends CI_Model
         if ($order_id > 0) {
             if ($post_data['order_type'] == 2 || $post_data['order_type'] == "2") {
                 
-                // insert customer details
-                
+                $this->load->model('customer_model');
+
+                $count = $this->customer_model->checkContactNumberExist($post_data['customer_contact']);
+
                 $customer_data               = array();
                 $customer_data['firstname']  = $post_data['customer_name'];
                 $customer_data['contact']    = $post_data['customer_contact'];
                 $customer_data['address']    = $post_data['customer_address'];
                 $customer_data['order_type'] = $post_data['order_type'];
                 $customer_data['order_id']   = $order_id;
-                $this->load->model('customer_model');
-                $customer_id = $this->customer_model->insert_into_customer($customer_data);
-
-                $data['customer_id'] = $customer_id;
+                
+                if($count==1){
+                    // insert customer details
+                    $customer_id = $this->customer_model->insert_into_customer($customer_data);
+                    $data['customer_id'] = $customer_id;
+                } else {
+                    //update
+                    $customer = $this->customer_model->update_contact($customer_data);
+                    $data['customer_id'] = $customer['customer_id'];
+                }
+                
                 $this->db->where('order_id', $order_id);
                 $result = $this->db->update('order_detail', $data);
+                
             }
             
             // update branch order code

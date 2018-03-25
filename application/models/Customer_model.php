@@ -109,6 +109,35 @@ class Customer_model extends CI_Model
         return $result;
     }
 
+    public function update_contact($data){
+        $data['updated']= date("Y-m-d H:i:s");
+        $this->db->where(array('contact'=> $data['contact']));
+        $this->db->update('customer',$data);
+
+        $this->db->select('*');
+        $this->db->where(array('contact'=> $data['contact']));
+        $query = $this->db->get('customer');    
+        return $query->row_array(); 
+        
+    }
+
+    public function checkContactNumberExist($contact){
+        if(!empty($contact)){
+            $this->db->select('customer_id');
+            $this->db->where(array('contact'=> $contact));
+            $query = $this->db->get('customer');        
+            $count = $query->num_rows();
+            if($count==0){
+                return 1;
+            } else {
+                return 0;
+            }
+        } else{
+            return 1;
+        }
+        
+    }
+
 } 
 
 ?>

@@ -5579,7 +5579,7 @@ app.controller('deliveryOrderCtrl', ["$scope", "$http", "$state", "$modal", "$wi
                     var discount_column = '';
                     if ($scope.dicount_percent != 0) {
                         dicount_percent = $scope.dicount_percent;
-                        discount_column = '<tr> <td colspan="4">DISCOUNT @ ' + dicount_percent + '%</td> <td align="right">' + ((parcel_invoice_total * dicount_percent) / 100).toFixed(2) + '</td> </tr> ';
+                        discount_column = '<tr> <td colspan="4">DISCOUNT @ ' + dicount_percent + '%</td> <td align="right">' + ((delivery_invoice_total * dicount_percent) / 100).toFixed(2) + '</td> </tr> ';
                     }
 
                     var customer ='' ;
@@ -5588,6 +5588,9 @@ app.controller('deliveryOrderCtrl', ["$scope", "$http", "$state", "$modal", "$wi
                         customer += '<tr> <td colspan="5">NAME: '+response.data.customer.firstname+'</td> </tr> ';
                     }
                     if(response.data.customer.contact){
+                        if(response.data.customer.contact==0 || response.data.customer.contact=="0"){
+                            response.data.customer.contact = '--';
+                        }
                         customer += '<tr> <td colspan="5">CONTACT: '+response.data.customer.contact+'</td> </tr> ';
                     }
                     if(response.data.customer.address){
