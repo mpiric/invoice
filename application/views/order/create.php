@@ -543,6 +543,7 @@
                     <form action="javascript:void(0)" name="delivery_order_form" novalidate method="post" >
                         <input type="hidden" id="branch_name" name="branch_name" ng-model="branch_name"> 
                         <fieldset>
+
                             <legend>
                                 Bill details <!-- - <span id="delivery_bill_number"></span> -->
                             </legend>
@@ -704,6 +705,7 @@
                                     </tr>
                                 </table>
                             </div>
+                            <span ng-click="openViewBillModal()"> click me</span>
                             <div class="col-md-4">
                                 <button  ng-disabled="countTotalProductsLive() || !online" class="btn btn-lg btn-primary btn-o hidden-print" ng-click="delivery_resetOrder()">Reset</button>
                                 <a id="printButtonDelivery" class="btn btn-lg btn-primary hidden-print" ng-disabled="!online || countTotalProducts_printDiv_delivery()" ng-click="delivery_printInvoice()">Print<i class="fa fa-print"></i></a>
@@ -749,4 +751,31 @@
     
     </form>
     
+</script>
+<script type="text/ng-template" id="viewBillModal.html">
+    <!-- Right Aside -->
+    <!--<div class="modal fade modal-aside horizontal right bs-example-modal-right"  tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog modal-sm">
+            <div class="modal-content">-->
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+                </div>
+                <div class="modal-body">
+                    Modal Content
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-o" data-dismiss="modal">
+                        Close
+                    </button>
+                    <button type="button" class="btn btn-primary">
+                        Save changes
+                    </button>
+                </div>
+            <!--</div>
+        </div>
+    </div>-->
+    <!-- /Right Aside -->
 </script>

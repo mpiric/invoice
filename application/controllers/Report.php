@@ -1763,11 +1763,11 @@ class Report extends CI_Controller
         foreach ($result as $order_data) {
             
             if ($p == 0) {
-                $start_bill_code = $order_data['order_code'];
+                $end_bill_code = $order_data['order_code'];
             }
             
             if ($p == ($totalOrders - 1)) {
-                $end_bill_code = $order_data['order_code'];
+                $start_bill_code = $order_data['order_code'];
             }
             
             $details[$i] = $order_data;
@@ -1864,7 +1864,7 @@ class Report extends CI_Controller
         if (!empty($branchDetails)) {
             $branch_name = $branchDetails['name'] . ' Branch ';
         }
-        
+        $printDate = date('F Y', strtotime(end($list)));
         // set default header data
         // $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE.' 001', PDF_HEADER_STRING, array(0,64,255), array(0,64,128));
         $pdf->SetHeaderData('', '', 'Sales Report', $branch_name . ': bills from ' . $start_bill_code . ' to ' . $end_bill_code, array(
@@ -2056,6 +2056,11 @@ class Report extends CI_Controller
         
         else if (isset($_POST['branch_id']) && $_POST['branch_id'] != '') {
             $branch_id = $_POST['branch_id'];
+        }
+
+        if(empty($branch_id)){
+            $session_data = $this->session->userdata('logged_in');
+            $branch_id = $session_data['branch_id'];
         }
         
         $list = array();
@@ -2292,6 +2297,7 @@ class Report extends CI_Controller
             $branch_name = $branchDetails['name'] . ' Branch ';
         }
         
+        $printDate = date('F Y', strtotime(end($list)));
         $this->load->library('Pdf');
         
         // create new PDF document
@@ -2303,7 +2309,7 @@ class Report extends CI_Controller
         $pdf->SetTitle('Daily Sales Report');
         $pdf->SetSubject('Daily Sales Report');
         
-        $pdf->SetHeaderData('', '', 'Daily Sales Report', $branch_name, array(
+        $pdf->SetHeaderData('', '', 'Daily Sales Report - '.$printDate, $branch_name, array(
             0,
             64,
             255

@@ -12,7 +12,7 @@
 
 						<td data-title="'Branch'" sortable="'branch_name'" filter="{ 'branch_name': 'text' }" >{{row.branch_name}}</td>
 
-						<td data-title="'Order'" sortable="'order_code'" filter="{ 'order_code': 'text' }" >{{row.order_code}}</td>
+						<td data-title="'Order'" sortable="'order_code'" filter="{ 'order_code': 'text' }" ng-click="openViewBillModal({{row.order_code}})">{{row.order_code}}</td>
 
 						<td data-title="'Order Type'" sortable="'orderType'" filter="{ 'orderType': 'text' }" >{{row.orderType}}</td>
 

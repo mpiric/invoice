@@ -3274,6 +3274,9 @@ app.controller('orderCtrl', ["$scope", "$http", "$state", "$modal", "$window", "
         }
     }
 
+
+
+
   
     
 
@@ -4640,6 +4643,40 @@ app.controller('parcelOrderCtrl', ["$scope", "$http", "$state", "$modal", "$wind
 
 
 app.controller('deliveryOrderCtrl', ["$scope", "$http", "$state", "$modal", "$window", "$q", "$rootScope", "hotkeys", function($scope, $http, $state, $modal, $window, $q, $rootScope, hotkeys) {
+
+    $scope.openViewBillModal = function()
+    {
+        if ($rootScope.online == true) 
+        {
+            
+            //console.log('order_id'+order_id);
+           // var order_id = $scope.order_id;
+
+                var modalInstance = $modal.open({
+                        templateUrl: 'viewBillModal.html',
+                        controller: 'deliveryOrderCtrl',
+                        //size: 'sm',
+                        resolve: {
+                                    // order_id: function() 
+                                    // {
+                                    //     return order_id;
+                                    // }
+                                    // // payment_card_number: function()
+                                    // // {
+                                    // //     return payment_card_number;
+                                    // // }
+                                   
+                                }
+                    });
+
+                modalInstance.result.then(function() {
+
+                         
+                    //updateOrderField();
+                    
+                });
+        }
+    }
 
     // $scope.getnextbillDelivery = function()
     // {
